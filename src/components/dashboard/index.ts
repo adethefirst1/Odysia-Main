@@ -1,0 +1,8 @@
+export { default as DashboardLayout } from './DashboardLayout'
+export { default as DashboardHome } from './DashboardHome'
+export { default as Projects } from './Projects'
+export { default as Milestones } from './Milestones'
+export { default as Messages } from './Messages'
+export { default as Earnings } from './Earnings'
+export { default as Profile } from './Profile'
+export { default as Support } from './Support' 
