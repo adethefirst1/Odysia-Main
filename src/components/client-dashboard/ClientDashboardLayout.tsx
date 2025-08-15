@@ -12,7 +12,8 @@ import {
   BellIcon,
   Bars3Icon,
   XMarkIcon,
-  QuestionMarkCircleIcon
+  QuestionMarkCircleIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline'
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -74,6 +75,13 @@ export default function ClientDashboardLayout({ children, activeSection = 'overv
     { id: 2, message: 'Payment processed for Mobile App project', time: '1 day ago', unread: true },
     { id: 3, message: 'Project milestone completed', time: '2 days ago', unread: false }
   ]
+
+  const handleLogout = () => {
+    // TODO: Implement actual logout logic (clear auth tokens, etc.)
+    console.log('Logging out...')
+    // For now, redirect to home page
+    router.push('/')
+  }
 
   return (
     <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 flex">
@@ -146,9 +154,19 @@ export default function ClientDashboardLayout({ children, activeSection = 'overv
 
           {/* Bottom Section */}
           <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
+            <div className="text-xs text-gray-500 dark:text-gray-400 text-center mb-3">
               Odysia Client Dashboard
             </div>
+            
+            {/* Logout Button */}
+            <motion.button
+              onClick={handleLogout}
+              className="w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-red-200 dark:border-red-800"
+              whileHover={{ x: 4 }}
+            >
+              <ArrowRightOnRectangleIcon className="h-5 w-5 mr-3" />
+              Logout
+            </motion.button>
           </div>
         </div>
       </motion.aside>
@@ -245,6 +263,17 @@ export default function ClientDashboardLayout({ children, activeSection = 'overv
 
               {/* Theme Toggle */}
               <ThemeToggle />
+
+              {/* Logout Button */}
+              <motion.button
+                onClick={handleLogout}
+                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                title="Logout"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 dark:text-gray-400" />
+              </motion.button>
             </div>
           </div>
         </header>
