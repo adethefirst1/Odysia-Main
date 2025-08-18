@@ -165,45 +165,43 @@ export default function ClientDashboardPage() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6"
     >
         {/* Welcome Banner */}
-        <motion.div variants={fadeInUp} className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 rounded-2xl shadow-sm p-6 text-white">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
+        <motion.div variants={fadeInUp} className="bg-gradient-to-r from-blue-600 to-blue-700 dark:from-blue-700 dark:to-blue-800 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 text-white">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-3 sm:space-y-4 lg:space-y-0">
             <div>
-              <h1 className="text-2xl font-bold mb-2">
+              <h1 className="text-xl sm:text-2xl font-bold mb-2">
                 Welcome back, {clientName}! 👋
               </h1>
-              <p className="text-blue-100 dark:text-blue-200">
+              <p className="text-sm sm:text-base text-blue-100 dark:text-blue-200">
                 Last login: {lastLogin} • Ready to build something amazing?
               </p>
             </div>
-            
-
           </div>
         </motion.div>
 
         {/* Summary Cards */}
-        <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {summaryStats.map((stat, index) => {
             const Icon = stat.icon
             return (
               <motion.div
                 key={stat.title}
                 variants={staggerItem}
-                className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
+                className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700 hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className={`p-3 rounded-lg ${stat.color} text-white`}>
-                    <Icon className="h-6 w-6" />
+                <div className="flex items-center justify-between mb-3 sm:mb-4">
+                  <div className={`p-2 sm:p-3 rounded-lg ${stat.color} text-white`}>
+                    <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                   </div>
                   <div className="flex items-center space-x-1">
                     {stat.changeType === 'positive' ? (
-                      <ArrowUpIcon className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <ArrowUpIcon className="h-3 w-3 sm:h-4 sm:w-4 text-green-600 dark:text-green-400" />
                     ) : (
-                      <ArrowDownIcon className="h-4 w-4 text-red-600 dark:text-red-400" />
+                      <ArrowDownIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-600 dark:text-red-400" />
                     )}
-                    <span className={`text-sm font-medium ${
+                    <span className={`text-xs sm:text-sm font-medium ${
                       stat.changeType === 'positive' 
                         ? 'text-green-600 dark:text-green-400' 
                         : 'text-red-600 dark:text-red-400'
@@ -213,10 +211,10 @@ export default function ClientDashboardPage() {
                   </div>
                 </div>
                 
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-1">
                   {stat.value}
                 </h3>
-                <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
+                <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400 mb-1">
                   {stat.title}
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-500">
@@ -227,19 +225,19 @@ export default function ClientDashboardPage() {
           })}
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Quick Actions */}
           <motion.div variants={fadeInUp} className="lg:col-span-2">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-600 dark:text-gray-400">
-                  <CalendarIcon className="h-4 w-4" />
+            <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Quick Actions</h2>
+                <div className="flex items-center space-x-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
+                  <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>Today</span>
                 </div>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {quickActions.map((action) => {
                   const Icon = action.icon
                   return (
@@ -247,16 +245,21 @@ export default function ClientDashboardPage() {
                       key={action.title}
                       variants={staggerItem}
                       onClick={() => handleQuickAction(action.href)}
-                      className="flex items-center space-x-4 p-4 border border-gray-200 dark:border-gray-700 rounded-xl hover:shadow-md transition-all hover:scale-105 mobile-touch-target focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      className="flex items-center space-x-3 sm:space-x-4 p-3 sm:p-4 border border-gray-200 dark:border-gray-700 rounded-lg sm:rounded-xl hover:shadow-md transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      style={{
+                        minHeight: '44px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
-                      <div className={`p-3 rounded-lg ${action.color} text-white`}>
-                        <Icon className="h-6 w-6" />
+                      <div className={`p-2 sm:p-3 rounded-lg ${action.color} text-white`}>
+                        <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                       </div>
                       <div className="flex-1 text-left">
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                        <h3 className="text-sm sm:text-base font-semibold text-gray-900 dark:text-white">
                           {action.title}
                         </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                           {action.description}
                         </p>
                       </div>
@@ -269,26 +272,33 @@ export default function ClientDashboardPage() {
 
           {/* Recent Activity */}
           <motion.div variants={fadeInUp} className="lg:col-span-1">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700 h-full">
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
-                <button className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
+            <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700 h-full">
+              <div className="flex items-center justify-between mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Recent Activity</h2>
+                <button 
+                  className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                  style={{
+                    minHeight: '32px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
+                >
                   View All
                 </button>
               </div>
               
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {recentActivity.map((activity) => (
                   <motion.div
                     key={activity.id}
                     variants={staggerItem}
-                    className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                    className="flex items-start space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
                   >
-                    <div className={`p-2 rounded-lg ${activity.color} text-white flex-shrink-0`}>
+                    <div className={`p-1.5 sm:p-2 rounded-lg ${activity.color} text-white flex-shrink-0`}>
                       {getActivityIcon(activity.type)}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-1">
+                      <h4 className="text-xs sm:text-sm font-medium text-gray-900 dark:text-white mb-1">
                         {activity.title}
                       </h4>
                       <p className="text-xs text-gray-600 dark:text-gray-400 mb-1 line-clamp-2">
@@ -306,24 +316,24 @@ export default function ClientDashboardPage() {
         </div>
 
         {/* Additional Stats Row */}
-        <motion.div variants={fadeInUp} className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
-                <StarIcon className="h-6 w-6 text-green-600 dark:text-green-400" />
+        <motion.div variants={fadeInUp} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-green-100 dark:bg-green-900/20 rounded-lg">
+                <StarIcon className="h-5 w-5 sm:h-6 sm:w-6 text-green-600 dark:text-green-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Average Rating</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">From completed projects</p>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white">Average Rating</h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">From completed projects</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">4.8</span>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">4.8</span>
               <div className="flex items-center space-x-1">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <StarIcon
                     key={star}
-                    className={`h-4 w-4 ${
+                    className={`h-3 w-3 sm:h-4 sm:w-4 ${
                       star <= 4 ? 'text-yellow-400' : 'text-gray-300 dark:text-gray-600'
                     }`}
                   />
@@ -332,35 +342,35 @@ export default function ClientDashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                <ChatBubbleLeftRightIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
+                <ChatBubbleLeftRightIcon className="h-5 w-5 sm:h-6 sm:w-6 text-blue-600 dark:text-blue-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Active Chats</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">With project experts</p>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white">Active Chats</h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">With project experts</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">5</span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">conversations</span>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">5</span>
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">conversations</span>
             </div>
           </div>
 
-          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
-                <ExclamationTriangleIcon className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+          <div className="bg-white dark:bg-gray-900 rounded-xl sm:rounded-2xl shadow-sm p-4 sm:p-6 border border-gray-200 dark:border-gray-700 sm:col-span-2 lg:col-span-1">
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-3 sm:mb-4">
+              <div className="p-2 sm:p-3 bg-purple-100 dark:bg-purple-900/20 rounded-lg">
+                <ExclamationTriangleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Pending Actions</h3>
-                <p className="text-sm text-gray-600 dark:text-gray-400">Require your attention</p>
+                <h3 className="text-sm sm:text-lg font-semibold text-gray-900 dark:text-white">Pending Actions</h3>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">Require your attention</p>
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <span className="text-3xl font-bold text-gray-900 dark:text-white">3</span>
-              <span className="text-sm text-gray-600 dark:text-gray-400">items</span>
+              <span className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">3</span>
+              <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">items</span>
             </div>
           </div>
         </motion.div>
