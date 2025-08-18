@@ -18,17 +18,5 @@ export default function ClientLoginLayout({
 }: {
   children: React.ReactNode
 }) {
-  return (
-    <html lang="en" className="scroll-smooth">
-      <body className={`${inter.className} transition-colors duration-300 bg-white dark:bg-dark-bg text-gray-900 dark:text-dark-text antialiased`}>
-        <ErrorBoundary>
-          <ThemeProvider>
-            <AnimatedCursor />
-            <ScrollProgress />
-            {children}
-          </ThemeProvider>
-        </ErrorBoundary>
-      </body>
-    </html>
-  )
+  return children
 }

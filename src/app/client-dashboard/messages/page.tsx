@@ -15,7 +15,8 @@ import {
   VideoCameraIcon,
   DocumentTextIcon,
   PhotoIcon,
-  XMarkIcon
+  XMarkIcon,
+  ArrowLeftIcon
 } from '@heroicons/react/24/outline'
 
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
@@ -25,6 +26,7 @@ export default function ClientMessagesPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [messageText, setMessageText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
+  const [showChatList, setShowChatList] = useState(true)
 
   const chats = [
     {
@@ -178,6 +180,18 @@ export default function ClientMessagesPage() {
     console.log('Uploading file')
   }
 
+  const handleChatSelect = (chatId: number) => {
+    setSelectedChat(chatId)
+    // On mobile, hide chat list when a chat is selected
+    if (window.innerWidth < 768) {
+      setShowChatList(false)
+    }
+  }
+
+  const handleBackToChatList = () => {
+    setShowChatList(true)
+  }
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'online': return 'bg-green-500'
@@ -202,214 +216,297 @@ export default function ClientMessagesPage() {
       initial="hidden"
       animate="visible"
       className="h-[calc(100vh-120px)] bg-white dark:bg-dark-card rounded-2xl shadow-sm overflow-hidden"
-      >
-        <div className="flex h-full">
-          {/* Left Panel - Chat List */}
-          <motion.div variants={fadeInUp} className="w-full md:w-80 border-r border-gray-200 dark:border-dark-border flex flex-col">
-            {/* Header */}
-            <div className="p-4 border-b border-gray-200 dark:border-dark-border">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
-                <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                  <EllipsisVerticalIcon className="h-5 w-5" />
-                </button>
-              </div>
-              
-              {/* Search */}
-              <div className="relative">
-                <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search conversations..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors text-sm"
-                />
-              </div>
+    >
+      <div className="flex h-full">
+        {/* Left Panel - Chat List */}
+        <motion.div 
+          variants={fadeInUp} 
+          className={`w-full md:w-80 border-r border-gray-200 dark:border-dark-border flex flex-col ${
+            showChatList ? 'block' : 'hidden md:block'
+          }`}
+        >
+          {/* Header */}
+          <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-dark-border">
+            <div className="flex items-center justify-between mb-3 sm:mb-4">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
+              <button 
+                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                style={{
+                  minHeight: '40px',
+                  minWidth: '40px',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
+              >
+                <EllipsisVerticalIcon className="h-5 w-5" />
+              </button>
             </div>
+            
+            {/* Search */}
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search conversations..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors text-sm"
+                style={{
+                  minHeight: '44px',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
+              />
+            </div>
+          </div>
 
-            {/* Chat List */}
-            <div className="flex-1 overflow-y-auto">
-              {filteredChats.map((chat) => (
-                <motion.div
-                  key={chat.id}
-                  variants={staggerItem}
-                  onClick={() => setSelectedChat(chat.id)}
-                  className={`p-4 border-b border-gray-100 dark:border-dark-border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-dark-surface ${
-                    selectedChat === chat.id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
-                  }`}
-                >
-                  <div className="flex items-start space-x-3">
-                    {/* Avatar */}
-                    <div className="relative">
-                      <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <UserIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
-                      </div>
-                      <div className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(chat.expert.status)}`} />
+          {/* Chat List */}
+          <div className="flex-1 overflow-y-auto">
+            {filteredChats.map((chat) => (
+              <motion.div
+                key={chat.id}
+                variants={staggerItem}
+                onClick={() => handleChatSelect(chat.id)}
+                className={`p-3 sm:p-4 border-b border-gray-100 dark:border-dark-border cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-dark-surface ${
+                  selectedChat === chat.id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
+                }`}
+                style={{
+                  minHeight: '60px',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
+              >
+                <div className="flex items-start space-x-3">
+                  {/* Avatar */}
+                  <div className="relative flex-shrink-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                      <UserIcon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-500 dark:text-gray-400" />
                     </div>
+                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(chat.expert.status)}`} />
+                  </div>
 
-                    {/* Chat Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between">
-                        <h3 className="font-medium text-gray-900 dark:text-white text-sm truncate">
-                          {chat.expert.name}
-                        </h3>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {chat.timestamp}
-                        </span>
-                      </div>
-                      
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">
-                        {chat.expert.project}
+                  {/* Chat Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-medium text-gray-900 dark:text-white text-sm truncate">
+                        {chat.expert.name}
+                      </h3>
+                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
+                        {chat.timestamp}
+                      </span>
+                    </div>
+                    
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 truncate">
+                      {chat.expert.project}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-400 truncate flex-1">
+                        {chat.lastMessage}
                       </p>
-                      
-                      <div className="flex items-center justify-between mt-2">
-                        <p className="text-sm text-gray-600 dark:text-gray-400 truncate flex-1">
-                          {chat.lastMessage}
-                        </p>
-                        {chat.unreadCount > 0 && (
-                          <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
-                            {chat.unreadCount}
-                          </span>
+                      {chat.unreadCount > 0 && (
+                        <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center flex-shrink-0">
+                          {chat.unreadCount}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Right Panel - Chat Window */}
+        <motion.div 
+          variants={fadeInUp} 
+          className={`flex-1 flex flex-col ${
+            !showChatList ? 'block' : 'hidden md:flex'
+          }`}
+        >
+          {selectedChatData ? (
+            <>
+              {/* Chat Header */}
+              <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-dark-border">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-3">
+                    {/* Back button for mobile */}
+                    <button
+                      onClick={handleBackToChatList}
+                      className="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      style={{
+                        minHeight: '40px',
+                        minWidth: '40px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <ArrowLeftIcon className="h-5 w-5" />
+                    </button>
+                    
+                    <div className="relative">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <UserIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-500 dark:text-gray-400" />
+                      </div>
+                      <div className={`absolute -bottom-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(selectedChatData.expert.status)}`} />
+                    </div>
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm sm:text-base truncate">
+                        {selectedChatData.expert.name}
+                      </h3>
+                      <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 truncate">
+                        {selectedChatData.expert.project}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <button 
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      style={{
+                        minHeight: '40px',
+                        minWidth: '40px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <PhoneIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                    <button 
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      style={{
+                        minHeight: '40px',
+                        minWidth: '40px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <VideoCameraIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                    <button 
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      style={{
+                        minHeight: '40px',
+                        minWidth: '40px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <EllipsisVerticalIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+                {messages.map((message) => (
+                  <motion.div
+                    key={message.id}
+                    variants={staggerItem}
+                    className={`flex ${message.sender === 'client' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-3 sm:px-4 py-2 rounded-lg ${
+                      message.sender === 'client'
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                    }`}>
+                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <div className={`flex items-center justify-between mt-1 ${
+                        message.sender === 'client' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
+                      }`}>
+                        <span className="text-xs">{message.timestamp}</span>
+                        {message.sender === 'client' && (
+                          <div className="ml-2">
+                            {getMessageStatusIcon(message.status)}
+                          </div>
                         )}
                       </div>
                     </div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          {/* Right Panel - Chat Window */}
-          <motion.div variants={fadeInUp} className="flex-1 flex flex-col">
-            {selectedChatData ? (
-              <>
-                {/* Chat Header */}
-                <div className="p-4 border-b border-gray-200 dark:border-dark-border">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="relative">
-                        <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                          <UserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                        </div>
-                        <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(selectedChatData.expert.status)}`} />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-gray-900 dark:text-white">
-                          {selectedChatData.expert.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {selectedChatData.expert.project}
-                        </p>
+                  </motion.div>
+                ))}
+                
+                {isTyping && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex justify-start"
+                  >
+                    <div className="bg-gray-100 dark:bg-gray-800 px-3 sm:px-4 py-2 rounded-lg">
+                      <div className="flex space-x-1">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                       </div>
                     </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                        <PhoneIcon className="h-5 w-5" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                        <VideoCameraIcon className="h-5 w-5" />
-                      </button>
-                      <button className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
-                        <EllipsisVerticalIcon className="h-5 w-5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                )}
+              </div>
 
-                {/* Messages */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-                  {messages.map((message) => (
-                    <motion.div
-                      key={message.id}
-                      variants={staggerItem}
-                      className={`flex ${message.sender === 'client' ? 'justify-end' : 'justify-start'}`}
-                    >
-                      <div className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
-                        message.sender === 'client'
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
-                      }`}>
-                        <p className="text-sm">{message.content}</p>
-                        <div className={`flex items-center justify-between mt-1 ${
-                          message.sender === 'client' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
-                        }`}>
-                          <span className="text-xs">{message.timestamp}</span>
-                          {message.sender === 'client' && (
-                            <div className="ml-2">
-                              {getMessageStatusIcon(message.status)}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+              {/* Message Input */}
+              <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-dark-border">
+                <div className="flex items-end space-x-2 sm:space-x-3">
+                  <div className="flex-1">
+                    <textarea
+                      value={messageText}
+                      onChange={(e) => setMessageText(e.target.value)}
+                      onKeyPress={handleKeyPress}
+                      placeholder="Type your message..."
+                      rows={1}
+                      className="w-full px-3 sm:px-4 py-2 sm:py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors resize-none"
+                      style={{ 
+                        minHeight: '44px', 
+                        maxHeight: '120px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    />
+                  </div>
                   
-                  {isTyping && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="flex justify-start"
+                  <div className="flex items-center space-x-1 sm:space-x-2">
+                    <button
+                      onClick={handleFileUpload}
+                      className="p-2 sm:p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                      style={{
+                        minHeight: '44px',
+                        minWidth: '44px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
-                      <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 rounded-lg">
-                        <div className="flex space-x-1">
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                          <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                        </div>
-                      </div>
-                    </motion.div>
-                  )}
-                </div>
-
-                {/* Message Input */}
-                <div className="p-4 border-t border-gray-200 dark:border-dark-border">
-                  <div className="flex items-end space-x-3">
-                    <div className="flex-1">
-                      <textarea
-                        value={messageText}
-                        onChange={(e) => setMessageText(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Type your message..."
-                        rows={1}
-                        className="w-full px-4 py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors resize-none"
-                        style={{ minHeight: '44px', maxHeight: '120px' }}
-                      />
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={handleFileUpload}
-                        className="p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                      >
-                        <PaperClipIcon className="h-5 w-5" />
-                      </button>
-                      <button
-                        onClick={handleSendMessage}
-                        disabled={!messageText.trim()}
-                        className="p-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed mobile-touch-target focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                      >
-                        <PaperAirplaneIcon className="h-5 w-5" />
-                      </button>
-                    </div>
+                      <PaperClipIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
+                    <button
+                      onClick={handleSendMessage}
+                      disabled={!messageText.trim()}
+                      className="p-2 sm:p-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                      style={{
+                        minHeight: '44px',
+                        minWidth: '44px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <PaperAirplaneIcon className="h-4 w-4 sm:h-5 sm:w-5" />
+                    </button>
                   </div>
-                </div>
-              </>
-            ) : (
-              /* Empty State */
-              <div className="flex-1 flex items-center justify-center">
-                <div className="text-center">
-                  <ChatBubbleLeftRightIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Select a conversation</h3>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    Choose a chat from the list to start messaging
-                  </p>
                 </div>
               </div>
-            )}
-          </motion.div>
-        </div>
-      </motion.div>
+            </>
+          ) : (
+            /* Empty State */
+            <div className="flex-1 flex items-center justify-center">
+              <div className="text-center">
+                <ChatBubbleLeftRightIcon className="h-12 w-12 sm:h-16 sm:w-16 text-gray-400 mx-auto mb-4" />
+                <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white mb-2">Select a conversation</h3>
+                <p className="text-sm sm:text-base text-gray-600 dark:text-gray-400">
+                  Choose a chat from the list to start messaging
+                </p>
+              </div>
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </motion.div>
   )
 }

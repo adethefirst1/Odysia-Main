@@ -6,6 +6,8 @@ import ScrollProgress from '@/components/ScrollProgress'
 import { ThemeProvider } from '@/lib/contexts/ThemeContext'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import LayoutWrapper from '@/components/LayoutWrapper'
+import MobileTestingUtils from '@/components/MobileTestingUtils'
+import NavigationWrapper from '@/components/NavigationWrapper'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,6 +41,30 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="scroll-smooth">
+      <head>
+        {/* Preload critical CSS */}
+        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            /* Critical CSS to prevent layout shifts */
+            body { 
+              opacity: 0; 
+              transition: opacity 0.3s ease-in-out; 
+            }
+            body.loaded { 
+              opacity: 1; 
+            }
+          `
+        }} />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            // Show body when CSS is loaded
+            document.addEventListener('DOMContentLoaded', function() {
+              document.body.classList.add('loaded');
+            });
+          `
+        }} />
+      </head>
       <body className={`${inter.className} transition-colors duration-300 bg-white dark:bg-black text-gray-900 dark:text-white antialiased`}>
         <ThemeProvider>
           <ErrorBoundary>
@@ -46,8 +72,11 @@ export default function RootLayout({
               <ScrollProgress />
               <AnimatedCursor />
               <LayoutWrapper>
-                {children}
+                <NavigationWrapper>
+                  {children}
+                </NavigationWrapper>
               </LayoutWrapper>
+              <MobileTestingUtils />
             </div>
           </ErrorBoundary>
         </ThemeProvider>
