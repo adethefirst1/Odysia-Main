@@ -344,7 +344,7 @@ export default function ProjectDetailsPage() {
                     <CurrencyDollarIcon className="h-4 w-4 text-gray-400" />
                     <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Budget</span>
                   </div>
-                  <p className="text-gray-900 dark:text-white font-medium">${project.budget.toLocaleString()}</p>
+                  <p className="text-gray-900 dark:text-white font-medium">₦{(project.budget * 1000).toLocaleString()}</p>
                 </div>
                 
                 <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">

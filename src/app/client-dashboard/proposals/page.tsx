@@ -37,7 +37,7 @@ export default function ClientProposalsPage() {
         bio: "Full-stack developer with 8+ years experience in e-commerce and web applications.",
         location: "San Francisco, CA"
       },
-      budget: "$8,500",
+      budget: "₦8,500,000",
       timeline: "4 weeks",
       submittedDate: "Dec 5, 2024",
       status: "pending",
@@ -57,7 +57,7 @@ export default function ClientProposalsPage() {
         bio: "Mobile app specialist with expertise in cross-platform development.",
         location: "Austin, TX"
       },
-      budget: "$12,000",
+      budget: "₦12,000,000",
       timeline: "6 weeks",
       submittedDate: "Dec 4, 2024",
       status: "accepted",
@@ -77,7 +77,7 @@ export default function ClientProposalsPage() {
         bio: "Backend developer specializing in scalable APIs and cloud infrastructure.",
         location: "Seattle, WA"
       },
-      budget: "$6,200",
+      budget: "₦6,200,000",
       timeline: "3 weeks",
       submittedDate: "Dec 3, 2024",
       status: "rejected",

@@ -1,410 +1,476 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { 
-  HomeIcon,
-  FolderIcon,
-  ChatBubbleLeftRightIcon,
-  CreditCardIcon,
-  PlusIcon,
+  HomeIcon, 
+  FolderIcon, 
+  ChatBubbleLeftRightIcon, 
+  CurrencyDollarIcon, 
+  UserIcon, 
+  QuestionMarkCircleIcon, 
+  ArrowRightOnRectangleIcon,
   BellIcon,
+  PaperAirplaneIcon,
   Bars3Icon,
   XMarkIcon,
-  QuestionMarkCircleIcon,
-  ArrowRightOnRectangleIcon
+  ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
-import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
-import { useRouter, usePathname } from 'next/navigation'
+import { fadeInDown, staggerContainer, staggerItem } from '@/lib/animations'
 
 interface ClientDashboardLayoutProps {
   children: React.ReactNode
   activeSection?: string
 }
 
-const navigationItems = [
-  { id: 'overview', label: 'Overview', icon: HomeIcon, href: '/client-dashboard' },
-  { id: 'projects', label: 'Projects', icon: FolderIcon, href: '/client-dashboard/projects' },
+const sidebarItems = [
+  { id: 'dashboard', label: 'Dashboard Home', icon: HomeIcon, href: '/client-dashboard' },
+  { id: 'projects', label: 'My Projects', icon: FolderIcon, href: '/client-dashboard/projects' },
   { id: 'proposals', label: 'Proposals', icon: ChatBubbleLeftRightIcon, href: '/client-dashboard/proposals' },
   { id: 'messages', label: 'Messages', icon: ChatBubbleLeftRightIcon, href: '/client-dashboard/messages' },
-  { id: 'payments', label: 'Payments', icon: CreditCardIcon, href: '/client-dashboard/payments' },
-  { id: 'support', label: 'Support', icon: QuestionMarkCircleIcon, href: '/client-dashboard/support' },
+  { id: 'payments', label: 'Payments', icon: CurrencyDollarIcon, href: '/client-dashboard/payments' },
+  { id: 'profile', label: 'Profile Settings', icon: UserIcon, href: '/client-dashboard/settings' },
+  { id: 'support', label: 'Support & Help', icon: QuestionMarkCircleIcon, href: '/client-dashboard/support' },
 ]
 
-export default function ClientDashboardLayout({ children, activeSection = 'overview' }: ClientDashboardLayoutProps) {
+export default function ClientDashboardLayout({ children, activeSection = 'dashboard' }: ClientDashboardLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  const [notifications] = useState(3)
+  const [notifications, setNotifications] = useState(3)
+  const [messages, setMessages] = useState(2)
   const [showNotifications, setShowNotifications] = useState(false)
+  const [showProfileMenu, setShowProfileMenu] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
-  const notificationsRef = useRef<HTMLDivElement>(null)
-  const sidebarRef = useRef<HTMLDivElement>(null)
-
+  
   // Determine active section based on current pathname
-  const getActiveSection = () => {
-    if (pathname === '/client-dashboard') return 'overview'
-    if (pathname.startsWith('/client-dashboard/projects')) return 'projects'
-    if (pathname.startsWith('/client-dashboard/proposals')) return 'proposals'
-    if (pathname.startsWith('/client-dashboard/messages')) return 'messages'
-    if (pathname.startsWith('/client-dashboard/payments')) return 'payments'
-    if (pathname.startsWith('/client-dashboard/support')) return 'support'
-    return 'overview'
-  }
+  const currentActiveSection = pathname === '/client-dashboard' ? 'dashboard' : 
+                              pathname.includes('/projects') ? 'projects' :
+                              pathname.includes('/proposals') ? 'proposals' :
+                              pathname.includes('/messages') ? 'messages' :
+                              pathname.includes('/payments') ? 'payments' :
+                              pathname.includes('/settings') ? 'profile' :
+                              pathname.includes('/support') ? 'support' : 'dashboard'
 
-  const currentActiveSection = getActiveSection()
-
-  // Close sidebar when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (notificationsRef.current && !notificationsRef.current.contains(event.target as Node)) {
-        setShowNotifications(false)
-      }
-      
-      // Close sidebar when clicking outside
-      if (isSidebarOpen && sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setIsSidebarOpen(false)
-      }
+  // Sample notifications data for clients
+  const recentNotifications = [
+    {
+      id: 1,
+      type: 'proposal',
+      message: 'New proposal received for "E-commerce Website" project',
+      time: '2 hours ago',
+      urgent: true,
+      read: false
+    },
+    {
+      id: 2,
+      type: 'payment',
+      message: 'Payment of ₦250,000 has been processed for Mobile App project',
+      time: '1 day ago',
+      urgent: false,
+      read: false
+    },
+    {
+      id: 3,
+      type: 'milestone',
+      message: 'Project milestone "UI Design" has been completed',
+      time: '2 days ago',
+      urgent: false,
+      read: true
+    },
+    {
+      id: 4,
+      type: 'message',
+      message: 'New message from Alex Chen regarding project updates',
+      time: '3 days ago',
+      urgent: false,
+      read: true
     }
-
-    // Close sidebar on escape key
-    const handleEscapeKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isSidebarOpen) {
-        setIsSidebarOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    document.addEventListener('keydown', handleEscapeKey)
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('keydown', handleEscapeKey)
-    }
-  }, [isSidebarOpen])
-
-  // Close sidebar when navigating to a new page
-  useEffect(() => {
-    setIsSidebarOpen(false)
-  }, [pathname])
-
-  // Prevent body scroll when sidebar is open
-  useEffect(() => {
-    if (isSidebarOpen) {
-      document.body.style.overflow = 'hidden'
-      document.body.style.position = 'fixed'
-      document.body.style.width = '100%'
-    } else {
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.width = ''
-    }
-
-    return () => {
-      document.body.style.overflow = ''
-      document.body.style.position = ''
-      document.body.style.width = ''
-    }
-  }, [isSidebarOpen])
-
-  // Mock notifications
-  const notificationList = [
-    { id: 1, message: 'New proposal received for E-commerce project', time: '2 hours ago', unread: true },
-    { id: 2, message: 'Payment processed for Mobile App project', time: '1 day ago', unread: true },
-    { id: 3, message: 'Project milestone completed', time: '2 days ago', unread: false }
   ]
 
   const handleLogout = () => {
-    console.log('Logging out...')
     router.push('/')
+    setShowProfileMenu(false)
   }
 
-  const handleCloseSidebar = () => {
-    console.log('Closing sidebar...')
-    setIsSidebarOpen(false)
+  const handleNotificationClick = (notificationId: number) => {
+    // Mark notification as read
+    setNotifications(prev => Math.max(0, prev - 1))
+    setShowNotifications(false)
+    // Here you would typically navigate to the relevant page or mark as read
   }
 
-  const handleOpenSidebar = () => {
-    console.log('Opening sidebar...')
-    setIsSidebarOpen(true)
+  const handleMessagesClick = () => {
+    router.push('/client-dashboard/messages')
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 flex relative">
-      {/* Mobile Sidebar Overlay */}
-      <AnimatePresence>
-        {isSidebarOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-            onClick={handleCloseSidebar}
-            style={{ WebkitTapHighlightColor: 'transparent' }}
-          />
-        )}
-      </AnimatePresence>
-
-      {/* Sidebar */}
-      <motion.aside
-        ref={sidebarRef}
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-gray-900 shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-        style={{ 
-          WebkitOverflowScrolling: 'touch',
-          overscrollBehavior: 'contain'
-        }}
+    <div className="min-h-screen bg-white dark:bg-dark-bg">
+      {/* Top Navigation Bar */}
+      <motion.nav 
+        className="bg-white dark:bg-dark-surface shadow-lg sticky top-0 z-50 transition-colors duration-300"
+        variants={fadeInDown}
+        initial="hidden"
+        animate="visible"
       >
-        <div className="flex flex-col h-full">
-          {/* Logo and Close Button */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-            <Logo
-              width={120}
-              height={48}
-              className="h-8 w-auto"
-              alt="Odysia Logo"
-            />
-            <button
-              onClick={handleCloseSidebar}
-              className="lg:hidden p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              style={{
-                minHeight: '48px',
-                minWidth: '48px',
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation',
-                position: 'relative',
-                zIndex: 60
-              }}
-              aria-label="Close sidebar"
-            >
-              <XMarkIcon className="h-6 w-6 text-gray-600 dark:text-gray-400" />
-            </button>
-          </div>
-
-          {/* Navigation */}
-          <nav className="flex-1 px-4 py-6 space-y-2">
-            {navigationItems.map((item) => {
-              const Icon = item.icon
-              const isActive = currentActiveSection === item.id
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-14 sm:h-16 lg:h-20">
+            {/* Logo and Mobile Menu Button */}
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <motion.button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="lg:hidden text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 p-2 rounded-lg transition-colors mobile-touch-target"
+                whileTap={{ scale: 0.95 }}
+                aria-label="Toggle mobile menu"
+              >
+                {isSidebarOpen ? (
+                  <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                ) : (
+                  <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                )}
+              </motion.button>
               
-              return (
-                <motion.div
-                  key={item.id}
-                  variants={staggerItem}
-                  whileHover={{ x: 4 }}
-                >
-                  <Link
-                    href={item.href}
-                    onClick={handleCloseSidebar}
-                    className={`flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors relative ${
-                      isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border-l-4 border-blue-600 dark:border-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 border-l-4 border-transparent'
-                    }`}
-                    style={{
-                      minHeight: '44px',
-                      WebkitTapHighlightColor: 'transparent',
-                      touchAction: 'manipulation'
-                    }}
-                  >
-                    <Icon className="h-5 w-5 mr-3" />
-                    {item.label}
-                  </Link>
-                </motion.div>
-              )
-            })}
-          </nav>
-
-          {/* Bottom Section */}
-          <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-            <div className="text-xs text-gray-500 dark:text-gray-400 text-center mb-3">
-              Odysia Client Dashboard
-            </div>
-            
-            {/* Logout Button */}
-            <motion.button
-              onClick={handleLogout}
-              className="w-full flex items-center px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors border border-red-200 dark:border-red-800"
-              whileHover={{ x: 4 }}
-              style={{
-                minHeight: '44px',
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation'
-              }}
-            >
-              <ArrowRightOnRectangleIcon className="h-5 w-5 mr-3" />
-              Logout
-            </motion.button>
-          </div>
-        </div>
-      </motion.aside>
-
-      {/* Main Content */}
-      <div className="lg:pl-64 flex-1 flex flex-col">
-        {/* Top Bar */}
-        <header className="bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-700 z-20">
-          <div className="flex items-center justify-between px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4">
-            {/* Left Side - Mobile Menu Button */}
-            <button
-              onClick={handleOpenSidebar}
-              className="lg:hidden p-2 sm:p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex-shrink-0"
-              style={{
-                minHeight: '40px',
-                minWidth: '40px',
-                WebkitTapHighlightColor: 'transparent',
-                touchAction: 'manipulation'
-              }}
-              aria-label="Open sidebar"
-            >
-              <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6 text-gray-600 dark:text-gray-400" />
-            </button>
-
-            {/* Center - Dashboard Title (hidden on mobile) */}
-            <div className="hidden md:flex items-center flex-1 justify-center">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Client Dashboard</h1>
+              <motion.div 
+                className="flex-shrink-0"
+                whileHover={{ scale: 1.05 }}
+              >
+                <Logo
+                  width={160}
+                  height={55}
+                  className="h-10 w-auto sm:h-12 md:h-14 lg:h-16"
+                  alt="Odysia Logo"
+                />
+              </motion.div>
             </div>
 
-            {/* Right Side - Actions */}
-            <div className="flex items-center space-x-1 sm:space-x-2 md:space-x-3 flex-shrink-0">
-              {/* Create New Project Button - Hidden on very small screens */}
-              <motion.button
-                className="hidden sm:flex bg-blue-600 dark:bg-blue-500 text-white px-2 sm:px-3 md:px-4 py-2 rounded-lg font-medium hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors items-center space-x-1 sm:space-x-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{
-                  minHeight: '40px',
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
-              >
-                <PlusIcon className="h-4 w-4" />
-                <span className="hidden md:inline text-sm">New Project</span>
-              </motion.button>
-
-              {/* Mobile-only New Project Button */}
-              <motion.button
-                className="sm:hidden bg-blue-600 dark:bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                style={{
-                  minHeight: '40px',
-                  minWidth: '40px',
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
-                title="New Project"
-              >
-                <PlusIcon className="h-4 w-4" />
-              </motion.button>
-
+            {/* Right side icons */}
+            <motion.div 
+              className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4"
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+            >
               {/* Notifications */}
-              <div className="relative" ref={notificationsRef}>
+              <motion.div
+                variants={staggerItem}
+                whileHover={{ scale: 1.05 }}
+                className="relative"
+              >
                 <button 
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="relative p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                  style={{
-                    minHeight: '40px',
-                    minWidth: '40px',
-                    WebkitTapHighlightColor: 'transparent',
-                    touchAction: 'manipulation'
-                  }}
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  aria-label="Notifications"
                 >
-                  <BellIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-400" />
+                  <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                   {notifications > 0 && (
                     <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
-                      {notifications > 9 ? '9+' : notifications}
+                      {notifications}
                     </span>
                   )}
                 </button>
 
-                {/* Notifications Dropdown */}
+                {/* Notifications Dropdown - Optimized for 400x620 */}
                 <AnimatePresence>
                   {showNotifications && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                      className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-72 md:w-80 bg-white dark:bg-gray-900 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-[calc(100vh-200px)] overflow-hidden"
-                      style={{
-                        maxWidth: 'calc(100vw - 2rem)',
-                        minWidth: '280px'
-                      }}
-                    >
-                      <div className="p-3 sm:p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h3 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
-                      </div>
-                      <div className="max-h-64 overflow-y-auto">
-                        {notificationList.map((notification) => (
-                          <div
-                            key={notification.id}
-                            className={`p-3 sm:p-4 border-b border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
-                              notification.unread ? 'bg-blue-50 dark:bg-blue-900/10' : ''
-                            }`}
-                          >
-                            <div className="flex items-start space-x-2 sm:space-x-3">
-                              <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
-                                notification.unread ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'
-                              }`} />
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm text-gray-900 dark:text-white leading-relaxed">
-                                  {notification.message}
-                                </p>
-                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                  {notification.time}
-                                </p>
+                    <>
+                      <motion.div
+                        className="fixed inset-0 z-40"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowNotifications(false)}
+                      />
+                      <motion.div
+                        className="absolute right-0 mt-2 w-72 sm:w-80 lg:w-96 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50 max-h-[60vh] sm:max-h-[70vh] overflow-hidden"
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="p-3 border-b border-gray-200 dark:border-dark-border">
+                          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                        </div>
+                        <div className="max-h-48 sm:max-h-64 lg:max-h-96 overflow-y-auto">
+                          {recentNotifications.map((notification) => (
+                            <motion.div
+                              key={notification.id}
+                              whileHover={{ backgroundColor: 'rgba(147, 51, 234, 0.05)' }}
+                              className={`p-3 border-b border-gray-100 dark:border-dark-border cursor-pointer transition-colors mobile-touch-target ${
+                                !notification.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
+                              }`}
+                              onClick={() => handleNotificationClick(notification.id)}
+                            >
+                              <div className="flex items-start space-x-2">
+                                <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-1.5 ${
+                                  notification.urgent ? 'bg-red-500' : 'bg-green-500'
+                                }`} />
+                                <div className="flex-1 min-w-0">
+                                  <p className={`text-xs sm:text-sm font-medium ${
+                                    !notification.read 
+                                      ? 'text-gray-900 dark:text-white' 
+                                      : 'text-gray-600 dark:text-gray-400'
+                                  }`}>
+                                    {notification.message}
+                                  </p>
+                                  <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                    {notification.time}
+                                  </p>
+                                </div>
+                                {notification.urgent && (
+                                  <ExclamationTriangleIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 flex-shrink-0 mt-1" />
+                                )}
                               </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700">
-                        <button className="w-full text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium py-2 px-3 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/10 transition-colors">
-                          View All Notifications
-                        </button>
-                      </div>
-                    </motion.div>
+                            </motion.div>
+                          ))}
+                        </div>
+                        <div className="p-3 border-t border-gray-200 dark:border-dark-border">
+                          <button className="w-full text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium mobile-touch-target">
+                            View all notifications
+                          </button>
+                        </div>
+                      </motion.div>
+                    </>
                   )}
                 </AnimatePresence>
-              </div>
+              </motion.div>
+
+              {/* Messages */}
+              <motion.div
+                variants={staggerItem}
+                whileHover={{ scale: 1.05 }}
+                className="relative"
+              >
+                <button 
+                  onClick={handleMessagesClick}
+                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  aria-label="Go to Messages"
+                >
+                  <PaperAirplaneIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  {messages > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
+                      {messages}
+                    </span>
+                  )}
+                </button>
+              </motion.div>
+
+              {/* Client Profile */}
+              <motion.div
+                variants={staggerItem}
+                whileHover={{ scale: 1.05 }}
+                className="relative"
+              >
+                <button 
+                  onClick={() => setShowProfileMenu(!showProfileMenu)}
+                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  aria-label="Client profile"
+                >
+                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-primary-600 dark:bg-primary-500 rounded-full flex items-center justify-center">
+                    <UserIcon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" />
+                  </div>
+                  <span className="hidden sm:block text-sm font-medium">Sarah Johnson</span>
+                </button>
+
+                {/* Profile Menu Dropdown - Optimized for 400x620 */}
+                <AnimatePresence>
+                  {showProfileMenu && (
+                    <>
+                      <motion.div
+                        className="fixed inset-0 z-40"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowProfileMenu(false)}
+                      />
+                      <motion.div
+                        className="absolute right-0 mt-2 w-40 sm:w-48 lg:w-56 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <div className="py-2">
+                          <div className="px-3 py-2 border-b border-gray-200 dark:border-dark-border">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">Sarah Johnson</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">sarah@example.com</p>
+                          </div>
+                          <div className="py-1">
+                            <Link
+                              href="/client-dashboard/settings"
+                              className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-surface transition-colors mobile-touch-target"
+                              onClick={() => setShowProfileMenu(false)}
+                            >
+                              <UserIcon className="h-4 w-4 mr-3" />
+                              Profile Settings
+                            </Link>
+                            <button
+                              onClick={handleLogout}
+                              className="flex items-center w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mobile-touch-target"
+                            >
+                              <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
+                              Sign Out
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </>
+                  )}
+                </AnimatePresence>
+              </motion.div>
 
               {/* Theme Toggle */}
-              <div className="flex-shrink-0">
-                <ThemeToggle />
-              </div>
-
-              {/* Logout Button */}
-              <motion.button
-                onClick={handleLogout}
-                className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              <motion.div
+                variants={staggerItem}
                 whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                title="Logout"
-                style={{
-                  minHeight: '40px',
-                  minWidth: '40px',
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
               >
-                <ArrowRightOnRectangleIcon className="h-4 w-4 sm:h-5 sm:w-5 text-gray-600 dark:text-gray-400" />
-              </motion.button>
-            </div>
+                <ThemeToggle />
+              </motion.div>
+            </motion.div>
           </div>
-        </header>
+        </div>
+      </motion.nav>
 
-        {/* Page Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8 bg-gray-50 dark:bg-gray-900">
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="h-full"
-          >
+      <div className="flex">
+        {/* Sidebar Navigation - Desktop */}
+        <motion.aside 
+          className="hidden lg:block w-64 bg-white dark:bg-dark-surface shadow-lg min-h-screen"
+          variants={fadeInDown}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="p-6">
+            <nav className="space-y-2">
+              {sidebarItems.map((item, index) => (
+                <motion.div
+                  key={item.id}
+                  variants={staggerItem}
+                  whileHover={{ x: 5 }}
+                >
+                  <Link
+                    href={item.href}
+                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                      currentActiveSection === item.id
+                        ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-card hover:text-primary-600 dark:hover:text-primary-400'
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    <span>{item.label}</span>
+                  </Link>
+                </motion.div>
+              ))}
+              
+              {/* Logout */}
+              <motion.div
+                variants={staggerItem}
+                whileHover={{ x: 5 }}
+                className="pt-4 border-t border-gray-200 dark:border-dark-border"
+              >
+                <button 
+                  onClick={handleLogout}
+                  className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full mobile-touch-target focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  aria-label="Logout"
+                >
+                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                  <span>Logout</span>
+                </button>
+              </motion.div>
+            </nav>
+          </div>
+        </motion.aside>
+
+        {/* Mobile Sidebar Overlay */}
+        <AnimatePresence>
+          {isSidebarOpen && (
+            <>
+              <motion.div
+                className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsSidebarOpen(false)}
+              />
+              <motion.aside
+                className="fixed left-0 top-0 h-full w-64 bg-white dark:bg-dark-surface shadow-xl z-50 lg:hidden"
+                initial={{ x: '-100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '-100%' }}
+                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              >
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-6">
+                    <Logo
+                      width={160}
+                      height={55}
+                      className="h-12 w-auto"
+                      alt="Odysia Logo"
+                    />
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 p-2 rounded-lg transition-colors"
+                      aria-label="Close mobile menu"
+                    >
+                      <XMarkIcon className="h-6 w-6" />
+                    </button>
+                  </div>
+                  
+                  <nav className="space-y-2">
+                    {sidebarItems.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 }}
+                        whileHover={{ x: 5 }}
+                      >
+                        <Link
+                          href={item.href}
+                          className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
+                            currentActiveSection === item.id
+                              ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
+                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-card hover:text-primary-600 dark:hover:text-primary-400'
+                          }`}
+                          onClick={() => setIsSidebarOpen(false)}
+                        >
+                          <item.icon className="h-5 w-5" />
+                          <span>{item.label}</span>
+                        </Link>
+                      </motion.div>
+                    ))}
+                    
+                    {/* Logout */}
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: sidebarItems.length * 0.1 }}
+                      whileHover={{ x: 5 }}
+                      className="pt-4 border-t border-gray-200 dark:border-dark-border"
+                    >
+                      <button 
+                        onClick={handleLogout}
+                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full mobile-touch-target focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        aria-label="Logout"
+                      >
+                        <ArrowRightOnRectangleIcon className="h-5 w-5" />
+                        <span>Logout</span>
+                      </button>
+                    </motion.div>
+                  </nav>
+                </div>
+              </motion.aside>
+            </>
+          )}
+        </AnimatePresence>
+
+        {/* Main Content */}
+        <main className="flex-1 min-h-screen">
+          <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
             {children}
-          </motion.div>
+          </div>
         </main>
       </div>
     </div>

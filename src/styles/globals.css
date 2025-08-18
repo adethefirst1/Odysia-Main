@@ -415,6 +415,128 @@
   }
 }
 
+/* Specific optimizations for 400x642 dimension */
+@media (max-width: 400px) {
+  /* Reduce padding and margins for very small screens */
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .p-3 {
+    padding: 0.5rem;
+  }
+  
+  .px-3 {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .py-3 {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+  
+  .space-y-4 > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .gap-3 {
+    gap: 0.5rem;
+  }
+  
+  .gap-4 {
+    gap: 0.75rem;
+  }
+
+  /* Optimize text sizes for very small screens */
+  .text-lg {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .text-base {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .text-sm {
+    font-size: 0.75rem;
+    line-height: 1rem;
+  }
+  
+  .text-xs {
+    font-size: 0.625rem;
+    line-height: 0.75rem;
+  }
+
+  /* Optimize icon sizes */
+  .h-4 {
+    height: 0.875rem;
+    width: 0.875rem;
+  }
+  
+  .h-5 {
+    height: 1rem;
+    width: 1rem;
+  }
+  
+  .h-6 {
+    height: 1.125rem;
+    width: 1.125rem;
+  }
+
+  /* Reduce border radius for better performance */
+  .rounded-xl {
+    border-radius: 0.5rem;
+  }
+  
+  .rounded-lg {
+    border-radius: 0.375rem;
+  }
+
+  /* Optimize grid layouts */
+  .grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  /* Reduce shadow complexity */
+  .shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  
+  .shadow-md {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Optimize mobile menu for very small screens */
+  .mobile-menu-content {
+    max-height: 70vh;
+    padding: 0.75rem;
+  }
+
+  /* Reduce animation durations for better performance */
+  .transition-all {
+    transition-duration: 0.15s;
+  }
+  
+  .transition-colors {
+    transition-duration: 0.15s;
+  }
+
+  /* Optimize touch targets for very small screens */
+  .mobile-touch-target {
+    min-height: 40px;
+    min-width: 40px;
+  }
+
+  /* Reduce motion for better performance */
+  .motion-reduce {
+    animation-duration: 0.1s !important;
+    transition-duration: 0.1s !important;
+  }
+}
+
 /* Tablet-specific optimizations */
 @media (min-width: 769px) and (max-width: 1024px) {
   .tablet-touch-target {

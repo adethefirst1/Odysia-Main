@@ -324,7 +324,7 @@ export default function ClientProjectsPage() {
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                         <CurrencyDollarIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                        <span>${project.budget.toLocaleString()}</span>
+                        <span>₦{(project.budget * 1000).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                         <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -426,7 +426,7 @@ export default function ClientProjectsPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <CurrencyDollarIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                        <span>${project.budget.toLocaleString()}</span>
+                        <span>₦{(project.budget * 1000).toLocaleString()}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />

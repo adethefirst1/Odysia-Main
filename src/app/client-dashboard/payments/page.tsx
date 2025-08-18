@@ -278,7 +278,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ${escrowBalance.total.toLocaleString()}
+              ₦{escrowBalance.total.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Securely held funds
@@ -293,7 +293,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ${escrowBalance.released.toLocaleString()}
+              ₦{escrowBalance.released.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Paid to experts
@@ -308,7 +308,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ${escrowBalance.available.toLocaleString()}
+              ₦{escrowBalance.available.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Ready for new projects
@@ -323,7 +323,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ${escrowBalance.pending.toLocaleString()}
+              ₦{escrowBalance.pending.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Awaiting completion
