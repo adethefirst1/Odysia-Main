@@ -144,8 +144,8 @@ export default function MobileTestingUtils({ showInProduction = false }: MobileT
                 </h4>
                 <div className="text-sm text-gray-600 dark:text-gray-400 space-y-1">
                   <div>FPS: {typeof window !== 'undefined' ? '~60' : 'N/A'}</div>
-                  <div>Memory: {typeof performance !== 'undefined' && 'memory' in performance ? Math.round((performance as any).memory?.usedJSHeapSize / 1024 / 1024) + 'MB' : 'N/A'}</div>
-                  <div>Load Time: {typeof performance !== 'undefined' ? Math.round(performance.timing.loadEventEnd - performance.timing.navigationStart) + 'ms' : 'N/A'}</div>
+                  <div>Memory: {typeof performance !== 'undefined' && 'memory' in performance ? Math.round(((performance as any).memory?.usedJSHeapSize || 0) / 1024 / 1024) + 'MB' : 'N/A'}</div>
+                  <div>Load Time: {typeof performance !== 'undefined' && 'timing' in performance ? Math.round((performance.timing.loadEventEnd - performance.timing.navigationStart) || 0) + 'ms' : 'N/A'}</div>
                 </div>
               </div>
 
