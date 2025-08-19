@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { useParams, useRouter } from 'next/navigation'
 import { 
@@ -80,12 +80,12 @@ export default function ProjectDetailsPage() {
   const [isLoading, setIsLoading] = useState(true)
 
   // Mock project data
-  const mockProject: Project = {
+  const mockProject = useMemo(() => ({
     id: Number(params.id),
     name: "E-commerce Website Redesign",
     description: "Complete redesign of our online store with modern UI/UX and improved functionality. This project includes responsive design, payment integration, and enhanced user experience features.",
     expert: "Alex Chen",
-    status: "in_progress",
+    status: "in_progress" as const,
     budget: 8500,
     timeline: "6 weeks",
     lastUpdated: "Dec 10, 2024",
@@ -93,7 +93,7 @@ export default function ProjectDetailsPage() {
     startDate: "Nov 15, 2024",
     endDate: "Dec 27, 2024",
     category: "Web Development",
-    priority: "high",
+    priority: "high" as const,
     milestones: [
       {
         id: 1,
@@ -174,7 +174,7 @@ export default function ProjectDetailsPage() {
         isClient: false
       }
     ]
-  }
+  }), [params.id])
 
   useEffect(() => {
     // Simulate loading
@@ -182,7 +182,7 @@ export default function ProjectDetailsPage() {
       setProject(mockProject)
       setIsLoading(false)
     }, 500)
-  }, [params.id, mockProject])
+  }, [mockProject])
 
   const getStatusColor = (status: string) => {
     switch (status) {
