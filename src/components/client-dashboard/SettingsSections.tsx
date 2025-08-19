@@ -27,7 +27,7 @@ export function ProfileSection() {
 
   const handleSave = () => {
     // TODO: Implement save functionality
-    console.log('Saving profile data:', profileData)
+    // Save profile data to backend
   }
 
   return (

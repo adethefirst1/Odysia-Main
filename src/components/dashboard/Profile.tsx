@@ -39,7 +39,7 @@ export default function Profile() {
     }>;
     badges: Array<{
       name: string;
-      icon: any;
+      icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
       color: string;
     }>;
   } = {

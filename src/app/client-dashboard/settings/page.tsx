@@ -24,7 +24,7 @@ import { DeleteAccountModal, DeactivateAccountModal } from '@/components/client-
 interface SettingsSection {
   id: string
   label: string
-  icon: any
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
   description: string
 }
 
