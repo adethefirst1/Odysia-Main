@@ -1,6 +1,8 @@
-# Odysia - Tech Consultancy Website
+# Odysia - Freelance Platform
 
-A modern, scalable Next.js 14 website for Odysia, a technology consultancy startup. Built with TypeScript, Tailwind CSS, and the App Router.
+<!-- Latest deployment: Fixed TypeScript errors for Vercel deployment -->
+
+A modern freelance platform built with Next.js, TypeScript, and Tailwind CSS.
 
 ## 🚀 Features
 
