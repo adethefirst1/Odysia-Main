@@ -24,8 +24,8 @@ export default function Hero() {
   const isMobile = useIsMobile()
 
   const { onTouchStart, onTouchMove, onTouchEnd } = useTouchGestures(
-    () => console.log('Swipe left'),
-    () => console.log('Swipe right')
+    () => {/* Handle swipe left */},
+    () => {/* Handle swipe right */}
   )
 
   return (

@@ -28,6 +28,7 @@ export function ProfileSection() {
   const handleSave = () => {
     // TODO: Implement save functionality
     // Save profile data to backend
+    // This would typically make an API call to update the user's profile
   }
 
   return (

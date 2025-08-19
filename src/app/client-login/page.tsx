@@ -49,11 +49,11 @@ export default function ClientLoginPage() {
       
       // Simple validation for demo purposes
       if (email === 'client@example.com' && password === 'password123') {
-        console.log('Client login successful:', { email })
+        // Login successful - redirect to dashboard
         router.push('/client-dashboard')
       } else {
         // For any other credentials, still allow access (demo mode)
-        console.log('Client login:', { email, password })
+        // Handle login error
         router.push('/client-dashboard')
       }
     }, 2000)

@@ -75,7 +75,7 @@ export default function Profile() {
   const handleAddSkill = () => {
     if (newSkill.trim() && !profile.skills.includes(newSkill)) {
       // Here you would typically update the profile with the new skill
-      console.log('Adding skill:', newSkill)
+      // Add skill to profile
       setNewSkill('')
     }
   }
@@ -83,7 +83,7 @@ export default function Profile() {
   const handleAddPortfolioItem = () => {
     if (newPortfolioItem.title && newPortfolioItem.link) {
       // Here you would typically add the portfolio item
-      console.log('Adding portfolio item:', newPortfolioItem)
+      // Add portfolio item
       setNewPortfolioItem({ title: '', link: '', description: '' })
     }
   }
