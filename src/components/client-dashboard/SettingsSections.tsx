@@ -537,7 +537,7 @@ export function VerificationSection() {
         <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-6 text-center">
           <IdentificationIcon className="h-12 w-12 text-gray-400 mx-auto mb-4" />
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            Upload your government-issued ID (Passport, Driver's License, or National ID)
+            Upload your government-issued ID (Passport, Driver&apos;s License, or National ID)
           </p>
           <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mobile-touch-target">
             Choose File

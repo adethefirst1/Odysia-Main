@@ -182,7 +182,7 @@ export default function ProjectDetailsPage() {
       setProject(mockProject)
       setIsLoading(false)
     }, 500)
-  }, [params.id])
+  }, [params.id, mockProject])
 
   const getStatusColor = (status: string) => {
     switch (status) {
