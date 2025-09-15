@@ -14,7 +14,8 @@ import {
   PhoneIcon,
   VideoCameraIcon,
   ArrowLeftIcon,
-  PlusIcon
+  PlusIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline'
 
 const fadeInUp = {
@@ -236,12 +237,7 @@ export default function ClientMessagesPage() {
   }
 
   return (
-    <motion.div
-      variants={staggerContainer}
-      initial="hidden"
-      animate="visible"
-      className="h-[calc(100vh-120px)] bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700"
-    >
+    <div className="h-[calc(100vh-120px)] bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700">
       <div className="flex h-full">
         {/* Conversation List - Mobile Hidden when chat is open */}
         <motion.div 
@@ -364,14 +360,14 @@ export default function ClientMessagesPage() {
         >
           {selectedChatData ? (
             <>
-              {/* Chat Header */}
+              {/* Chat Header - Mobile Optimized */}
               <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
+                  <div className="flex items-center space-x-3 flex-1 min-w-0">
                     {/* Back button for mobile */}
                     <button
                       onClick={handleBackToChatList}
-                      className="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
+                      className="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg flex-shrink-0"
                       style={{
                         minHeight: '44px',
                         minWidth: '44px',
@@ -382,13 +378,13 @@ export default function ClientMessagesPage() {
                       <ArrowLeftIcon className="h-6 w-6" />
                     </button>
                     
-                    <div className="relative">
+                    <div className="relative flex-shrink-0">
                       <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                         <UserIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                       </div>
                       <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${getStatusColor(selectedChatData.expert.status)}`} />
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-semibold text-gray-900 dark:text-white text-lg truncate">
                         {selectedChatData.expert.name}
                       </h3>
@@ -398,7 +394,7 @@ export default function ClientMessagesPage() {
                     </div>
                   </div>
                   
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-1 flex-shrink-0">
                     <button 
                       className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
@@ -436,7 +432,7 @@ export default function ClientMessagesPage() {
                 </div>
               </div>
 
-              {/* Messages */}
+              {/* Messages - Mobile Optimized */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((message) => (
                   <motion.div
@@ -444,12 +440,12 @@ export default function ClientMessagesPage() {
                     variants={staggerItem}
                     className={`flex ${message.sender === 'client' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
+                    <div className={`max-w-[85%] px-4 py-3 rounded-2xl shadow-sm ${
                       message.sender === 'client'
                         ? 'bg-blue-600 text-white'
                         : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                     }`}>
-                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <p className="text-sm leading-relaxed break-words">{message.content}</p>
                       <div className={`flex items-center justify-between mt-2 ${
                         message.sender === 'client' ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
                       }`}>
@@ -481,7 +477,7 @@ export default function ClientMessagesPage() {
                 )}
               </div>
 
-              {/* Message Input */}
+              {/* Message Input - Mobile Optimized */}
               <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
@@ -545,6 +541,6 @@ export default function ClientMessagesPage() {
           )}
         </motion.div>
       </div>
-    </motion.div>
+    </div>
   )
 }
