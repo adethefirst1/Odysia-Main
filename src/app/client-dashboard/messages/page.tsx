@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   ChatBubbleLeftRightIcon,
@@ -13,16 +13,48 @@ import {
   ClockIcon,
   PhoneIcon,
   VideoCameraIcon,
-  ArrowLeftIcon
+  ArrowLeftIcon,
+  PlusIcon
 } from '@heroicons/react/24/outline'
-import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
 
 export default function ClientMessagesPage() {
   const [selectedChat, setSelectedChat] = useState<number | null>(1)
   const [searchTerm, setSearchTerm] = useState('')
   const [messageText, setMessageText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
-  const [showChatView, setShowChatView] = useState(false) // For mobile view control
+  const [showChatView, setShowChatView] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const chats = [
     {
@@ -158,7 +190,6 @@ export default function ClientMessagesPage() {
 
   const handleSendMessage = () => {
     if (messageText.trim()) {
-      // TODO: Implement message sending
       console.log('Sending message:', messageText)
       setMessageText('')
     }
@@ -172,14 +203,12 @@ export default function ClientMessagesPage() {
   }
 
   const handleFileUpload = () => {
-    // TODO: Implement file upload
     console.log('Uploading file')
   }
 
   const handleChatSelect = (chatId: number) => {
     setSelectedChat(chatId)
-    // On mobile, switch to chat view
-    if (window.innerWidth < 768) {
+    if (isMobile) {
       setShowChatView(true)
     }
   }
@@ -211,42 +240,55 @@ export default function ClientMessagesPage() {
       variants={staggerContainer}
       initial="hidden"
       animate="visible"
-      className="h-[calc(100vh-120px)] bg-white dark:bg-dark-card rounded-2xl shadow-sm overflow-hidden"
+      className="h-[calc(100vh-120px)] bg-white dark:bg-gray-800 rounded-2xl shadow-sm overflow-hidden border border-gray-200 dark:border-gray-700"
     >
       <div className="flex h-full">
-        {/* Conversation List - Left Column */}
+        {/* Conversation List - Mobile Hidden when chat is open */}
         <motion.div 
           variants={fadeInUp} 
-          className={`w-full md:w-80 lg:w-96 border-r border-gray-200 dark:border-dark-border flex flex-col ${
+          className={`w-full md:w-96 border-r border-gray-200 dark:border-gray-700 flex flex-col ${
             showChatView ? 'hidden md:flex' : 'flex'
           }`}
         >
           {/* Header */}
-          <div className="p-4 border-b border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800">
+          <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Messages</h2>
-              <button 
-                className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
-                style={{
-                  minHeight: '44px',
-                  minWidth: '44px',
-                  WebkitTapHighlightColor: 'transparent',
-                  touchAction: 'manipulation'
-                }}
-              >
-                <EllipsisVerticalIcon className="h-5 w-5" />
-              </button>
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Messages</h2>
+              <div className="flex items-center space-x-2">
+                <button 
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
+                  style={{
+                    minHeight: '44px',
+                    minWidth: '44px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
+                >
+                  <PlusIcon className="h-5 w-5" />
+                </button>
+                <button 
+                  className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
+                  style={{
+                    minHeight: '44px',
+                    minWidth: '44px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
+                >
+                  <EllipsisVerticalIcon className="h-5 w-5" />
+                </button>
+              </div>
             </div>
             
             {/* Search */}
             <div className="relative">
-              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search conversations..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors text-sm mobile-touch-target"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors text-base"
                 style={{
                   minHeight: '48px',
                   WebkitTapHighlightColor: 'transparent',
@@ -263,11 +305,11 @@ export default function ClientMessagesPage() {
                 key={chat.id}
                 variants={staggerItem}
                 onClick={() => handleChatSelect(chat.id)}
-                className={`p-4 border-b border-gray-100 dark:border-dark-border cursor-pointer transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 mobile-touch-target ${
+                className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-all duration-200 hover:bg-gray-50 dark:hover:bg-gray-700 ${
                   selectedChat === chat.id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
                 }`}
                 style={{
-                  minHeight: '80px',
+                  minHeight: '88px',
                   WebkitTapHighlightColor: 'transparent',
                   touchAction: 'manipulation'
                 }}
@@ -278,21 +320,21 @@ export default function ClientMessagesPage() {
                     <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
                       <UserIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                     </div>
-                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(chat.expert.status)}`} />
+                    <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${getStatusColor(chat.expert.status)}`} />
                   </div>
 
                   {/* Chat Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1">
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm truncate">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-base truncate">
                         {chat.expert.name}
                       </h3>
-                      <span className="text-xs text-gray-500 dark:text-gray-400 ml-2 flex-shrink-0">
+                      <span className="text-sm text-gray-500 dark:text-gray-400 ml-2 flex-shrink-0">
                         {chat.timestamp}
                       </span>
                     </div>
                     
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-2 truncate">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 truncate">
                       {chat.expert.project}
                     </p>
                     
@@ -301,7 +343,7 @@ export default function ClientMessagesPage() {
                         {chat.lastMessage}
                       </p>
                       {chat.unreadCount > 0 && (
-                        <span className="ml-2 bg-blue-600 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center flex-shrink-0">
+                        <span className="ml-2 bg-blue-600 text-white text-sm rounded-full px-2 py-1 min-w-[24px] text-center flex-shrink-0">
                           {chat.unreadCount}
                         </span>
                       )}
@@ -313,7 +355,7 @@ export default function ClientMessagesPage() {
           </div>
         </motion.div>
 
-        {/* Chat Window - Right Column */}
+        {/* Chat Window - Mobile Full Width */}
         <motion.div 
           variants={fadeInUp} 
           className={`flex-1 flex flex-col ${
@@ -323,13 +365,13 @@ export default function ClientMessagesPage() {
           {selectedChatData ? (
             <>
               {/* Chat Header */}
-              <div className="p-4 border-b border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800">
+              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
                     {/* Back button for mobile */}
                     <button
                       onClick={handleBackToChatList}
-                      className="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                      className="md:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
                         minHeight: '44px',
                         minWidth: '44px',
@@ -337,17 +379,17 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <ArrowLeftIcon className="h-5 w-5" />
+                      <ArrowLeftIcon className="h-6 w-6" />
                     </button>
                     
                     <div className="relative">
-                      <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <UserIcon className="h-5 w-5 text-gray-500 dark:text-gray-400" />
+                      <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full flex items-center justify-center">
+                        <UserIcon className="h-6 w-6 text-gray-500 dark:text-gray-400" />
                       </div>
-                      <div className={`absolute -bottom-1 -right-1 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-dark-card ${getStatusColor(selectedChatData.expert.status)}`} />
+                      <div className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full border-2 border-white dark:border-gray-800 ${getStatusColor(selectedChatData.expert.status)}`} />
                     </div>
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-base truncate">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-lg truncate">
                         {selectedChatData.expert.name}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
@@ -358,7 +400,7 @@ export default function ClientMessagesPage() {
                   
                   <div className="flex items-center space-x-2">
                     <button 
-                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
                         minHeight: '44px',
                         minWidth: '44px',
@@ -366,10 +408,10 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <PhoneIcon className="h-5 w-5" />
+                      <PhoneIcon className="h-6 w-6" />
                     </button>
                     <button 
-                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
                         minHeight: '44px',
                         minWidth: '44px',
@@ -377,10 +419,10 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <VideoCameraIcon className="h-5 w-5" />
+                      <VideoCameraIcon className="h-6 w-6" />
                     </button>
                     <button 
-                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                      className="p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
                         minHeight: '44px',
                         minWidth: '44px',
@@ -388,7 +430,7 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <EllipsisVerticalIcon className="h-5 w-5" />
+                      <EllipsisVerticalIcon className="h-6 w-6" />
                     </button>
                   </div>
                 </div>
@@ -402,10 +444,10 @@ export default function ClientMessagesPage() {
                     variants={staggerItem}
                     className={`flex ${message.sender === 'client' ? 'justify-end' : 'justify-start'}`}
                   >
-                    <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-4 py-3 rounded-lg shadow-sm ${
+                    <div className={`max-w-[85%] sm:max-w-xs lg:max-w-md px-4 py-3 rounded-2xl shadow-sm ${
                       message.sender === 'client'
                         ? 'bg-blue-600 text-white'
-                        : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white'
+                        : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white'
                     }`}>
                       <p className="text-sm leading-relaxed">{message.content}</p>
                       <div className={`flex items-center justify-between mt-2 ${
@@ -428,7 +470,7 @@ export default function ClientMessagesPage() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-lg shadow-sm">
+                    <div className="bg-gray-100 dark:bg-gray-700 px-4 py-3 rounded-2xl shadow-sm">
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
@@ -440,7 +482,7 @@ export default function ClientMessagesPage() {
               </div>
 
               {/* Message Input */}
-              <div className="p-4 border-t border-gray-200 dark:border-dark-border bg-gray-50 dark:bg-gray-800">
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
                 <div className="flex items-end space-x-3">
                   <div className="flex-1">
                     <textarea
@@ -449,7 +491,7 @@ export default function ClientMessagesPage() {
                       onKeyPress={handleKeyPress}
                       placeholder="Type your message..."
                       rows={1}
-                      className="w-full px-4 py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-dark-surface text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors resize-none mobile-touch-target"
+                      className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 transition-colors resize-none"
                       style={{ 
                         minHeight: '48px', 
                         maxHeight: '120px',
@@ -462,7 +504,7 @@ export default function ClientMessagesPage() {
                   <div className="flex items-center space-x-2">
                     <button
                       onClick={handleFileUpload}
-                      className="p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                      className="p-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                       style={{
                         minHeight: '48px',
                         minWidth: '48px',
@@ -470,12 +512,12 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <PaperClipIcon className="h-5 w-5" />
+                      <PaperClipIcon className="h-6 w-6" />
                     </button>
                     <button
                       onClick={handleSendMessage}
                       disabled={!messageText.trim()}
-                      className="p-3 bg-blue-600 dark:bg-blue-500 text-white rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mobile-touch-target"
+                      className="p-3 bg-blue-600 dark:bg-blue-500 text-white rounded-xl hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors disabled:bg-gray-300 dark:disabled:bg-gray-600 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
                       style={{
                         minHeight: '48px',
                         minWidth: '48px',
@@ -483,7 +525,7 @@ export default function ClientMessagesPage() {
                         touchAction: 'manipulation'
                       }}
                     >
-                      <PaperAirplaneIcon className="h-5 w-5" />
+                      <PaperAirplaneIcon className="h-6 w-6" />
                     </button>
                   </div>
                 </div>
@@ -493,8 +535,8 @@ export default function ClientMessagesPage() {
             /* Empty State */
             <div className="flex-1 flex items-center justify-center">
               <div className="text-center">
-                <ChatBubbleLeftRightIcon className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">Select a conversation</h3>
+                <ChatBubbleLeftRightIcon className="h-20 w-20 text-gray-400 mx-auto mb-6" />
+                <h3 className="text-xl font-medium text-gray-900 dark:text-white mb-2">Select a conversation</h3>
                 <p className="text-base text-gray-600 dark:text-gray-400">
                   Choose a chat from the list to start messaging
                 </p>

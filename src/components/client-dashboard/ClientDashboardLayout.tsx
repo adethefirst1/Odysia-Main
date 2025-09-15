@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -17,7 +17,8 @@ import {
   PaperAirplaneIcon,
   Bars3Icon,
   XMarkIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  ChevronDownIcon
 } from '@heroicons/react/24/outline'
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
@@ -30,13 +31,13 @@ interface ClientDashboardLayoutProps {
 }
 
 const sidebarItems = [
-  { id: 'dashboard', label: 'Dashboard Home', icon: HomeIcon, href: '/client-dashboard' },
-  { id: 'projects', label: 'My Projects', icon: FolderIcon, href: '/client-dashboard/projects' },
+  { id: 'dashboard', label: 'Dashboard', icon: HomeIcon, href: '/client-dashboard' },
+  { id: 'projects', label: 'Projects', icon: FolderIcon, href: '/client-dashboard/projects' },
   { id: 'proposals', label: 'Proposals', icon: ChatBubbleLeftRightIcon, href: '/client-dashboard/proposals' },
   { id: 'messages', label: 'Messages', icon: ChatBubbleLeftRightIcon, href: '/client-dashboard/messages' },
   { id: 'payments', label: 'Payments', icon: CurrencyDollarIcon, href: '/client-dashboard/payments' },
-  { id: 'profile', label: 'Profile Settings', icon: UserIcon, href: '/client-dashboard/settings' },
-  { id: 'support', label: 'Support & Help', icon: QuestionMarkCircleIcon, href: '/client-dashboard/support' },
+  { id: 'profile', label: 'Settings', icon: UserIcon, href: '/client-dashboard/settings' },
+  { id: 'support', label: 'Support', icon: QuestionMarkCircleIcon, href: '/client-dashboard/support' },
 ]
 
 export default function ClientDashboardLayout({ children, activeSection = 'dashboard' }: ClientDashboardLayoutProps) {
@@ -46,6 +47,7 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
   const [messages, setMessages] = useState(2)
   const [showNotifications, setShowNotifications] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
   
@@ -57,6 +59,20 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                               pathname.includes('/payments') ? 'payments' :
                               pathname.includes('/settings') ? 'profile' :
                               pathname.includes('/support') ? 'support' : 'dashboard'
+
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+      if (window.innerWidth >= 768) {
+        setIsSidebarOpen(false)
+      }
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   // Sample notifications data for clients
   const recentNotifications = [
@@ -100,39 +116,50 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
   }
 
   const handleNotificationClick = (notificationId: number) => {
-    // Mark notification as read
     setNotifications(prev => Math.max(0, prev - 1))
     setShowNotifications(false)
-    // Here you would typically navigate to the relevant page or mark as read
   }
 
   const handleMessagesClick = () => {
     router.push('/client-dashboard/messages')
   }
 
+  const handleSidebarItemClick = (href: string) => {
+    if (isMobile) {
+      setIsSidebarOpen(false)
+    }
+    router.push(href)
+  }
+
   return (
-    <div className="min-h-screen bg-white dark:bg-dark-bg">
-      {/* Top Navigation Bar */}
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Mobile-First Top Navigation Bar */}
       <motion.nav 
-        className="bg-white dark:bg-dark-surface shadow-lg sticky top-0 z-50 transition-colors duration-300"
+        className="bg-white dark:bg-gray-800 shadow-sm sticky top-0 z-50 border-b border-gray-200 dark:border-gray-700"
         variants={fadeInDown}
         initial="hidden"
         animate="visible"
       >
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-14 sm:h-16 lg:h-20">
-            {/* Logo and Mobile Menu Button */}
-            <div className="flex items-center space-x-3 sm:space-x-4">
+        <div className="px-4 sm:px-6">
+          <div className="flex justify-between items-center h-16">
+            {/* Left: Mobile Menu + Logo */}
+            <div className="flex items-center space-x-3">
               <motion.button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="lg:hidden text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 p-2 rounded-lg transition-colors mobile-touch-target"
+                className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors"
                 whileTap={{ scale: 0.95 }}
                 aria-label="Toggle mobile menu"
+                style={{
+                  minHeight: '44px',
+                  minWidth: '44px',
+                  WebkitTapHighlightColor: 'transparent',
+                  touchAction: 'manipulation'
+                }}
               >
                 {isSidebarOpen ? (
-                  <XMarkIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <XMarkIcon className="h-6 w-6" />
                 ) : (
-                  <Bars3Icon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <Bars3Icon className="h-6 w-6" />
                 )}
               </motion.button>
               
@@ -141,41 +168,41 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                 whileHover={{ scale: 1.05 }}
               >
                 <Logo
-                  width={160}
-                  height={55}
-                  className="h-10 w-auto sm:h-12 md:h-14 lg:h-16"
+                  width={120}
+                  height={40}
+                  className="h-8 w-auto"
                   alt="Odysia Logo"
                 />
               </motion.div>
             </div>
 
-            {/* Right side icons */}
-            <motion.div 
-              className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4"
-              variants={staggerContainer}
-              initial="hidden"
-              animate="visible"
-            >
+            {/* Right: Notifications, Messages, Profile */}
+            <div className="flex items-center space-x-2">
               {/* Notifications */}
               <motion.div
-                variants={staggerItem}
                 whileHover={{ scale: 1.05 }}
                 className="relative"
               >
                 <button 
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors" 
                   aria-label="Notifications"
+                  style={{
+                    minHeight: '44px',
+                    minWidth: '44px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
                 >
-                  <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <BellIcon className="h-6 w-6" />
                   {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {notifications}
                     </span>
                   )}
                 </button>
 
-                {/* Notifications Dropdown - Optimized for 400x620 */}
+                {/* Notifications Dropdown */}
                 <AnimatePresence>
                   {showNotifications && (
                     <>
@@ -187,31 +214,36 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                         onClick={() => setShowNotifications(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-72 sm:w-80 lg:w-96 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50 max-h-[60vh] sm:max-h-[70vh] overflow-hidden"
+                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-hidden"
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <div className="p-3 border-b border-gray-200 dark:border-dark-border">
-                          <h3 className="text-sm sm:text-base lg:text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                        <div className="p-4 border-b border-gray-200 dark:border-gray-700">
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
                         </div>
-                        <div className="max-h-48 sm:max-h-64 lg:max-h-96 overflow-y-auto">
+                        <div className="max-h-64 overflow-y-auto">
                           {recentNotifications.map((notification) => (
                             <motion.div
                               key={notification.id}
-                              whileHover={{ backgroundColor: 'rgba(147, 51, 234, 0.05)' }}
-                              className={`p-3 border-b border-gray-100 dark:border-dark-border cursor-pointer transition-colors mobile-touch-target ${
+                              whileHover={{ backgroundColor: 'rgba(59, 130, 246, 0.05)' }}
+                              className={`p-4 border-b border-gray-100 dark:border-gray-700 cursor-pointer transition-colors ${
                                 !notification.read ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                               }`}
                               onClick={() => handleNotificationClick(notification.id)}
+                              style={{
+                                minHeight: '60px',
+                                WebkitTapHighlightColor: 'transparent',
+                                touchAction: 'manipulation'
+                              }}
                             >
-                              <div className="flex items-start space-x-2">
-                                <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-1.5 ${
+                              <div className="flex items-start space-x-3">
+                                <div className={`flex-shrink-0 w-2 h-2 rounded-full mt-2 ${
                                   notification.urgent ? 'bg-red-500' : 'bg-green-500'
                                 }`} />
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-xs sm:text-sm font-medium ${
+                                  <p className={`text-sm font-medium ${
                                     !notification.read 
                                       ? 'text-gray-900 dark:text-white' 
                                       : 'text-gray-600 dark:text-gray-400'
@@ -223,14 +255,14 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                                   </p>
                                 </div>
                                 {notification.urgent && (
-                                  <ExclamationTriangleIcon className="h-3 w-3 sm:h-4 sm:w-4 text-red-500 flex-shrink-0 mt-1" />
+                                  <ExclamationTriangleIcon className="h-4 w-4 text-red-500 flex-shrink-0 mt-1" />
                                 )}
                               </div>
                             </motion.div>
                           ))}
                         </div>
-                        <div className="p-3 border-t border-gray-200 dark:border-dark-border">
-                          <button className="w-full text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium mobile-touch-target">
+                        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+                          <button className="w-full text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
                             View all notifications
                           </button>
                         </div>
@@ -242,42 +274,52 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
 
               {/* Messages */}
               <motion.div
-                variants={staggerItem}
                 whileHover={{ scale: 1.05 }}
                 className="relative"
               >
                 <button 
                   onClick={handleMessagesClick}
-                  className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors" 
                   aria-label="Go to Messages"
+                  style={{
+                    minHeight: '44px',
+                    minWidth: '44px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
                 >
-                  <PaperAirplaneIcon className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <PaperAirplaneIcon className="h-6 w-6" />
                   {messages > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center">
+                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                       {messages}
                     </span>
                   )}
                 </button>
               </motion.div>
 
-              {/* Client Profile */}
+              {/* Profile */}
               <motion.div
-                variants={staggerItem}
                 whileHover={{ scale: 1.05 }}
                 className="relative"
               >
                 <button 
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
-                  className="flex items-center space-x-2 text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
+                  className="flex items-center space-x-2 p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors" 
                   aria-label="Client profile"
+                  style={{
+                    minHeight: '44px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
                 >
-                  <div className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 bg-primary-600 dark:bg-primary-500 rounded-full flex items-center justify-center">
-                    <UserIcon className="h-3 w-3 sm:h-4 sm:w-4 lg:h-5 lg:w-5 text-white" />
+                  <div className="w-8 h-8 bg-blue-600 dark:bg-blue-500 rounded-full flex items-center justify-center">
+                    <UserIcon className="h-5 w-5 text-white" />
                   </div>
                   <span className="hidden sm:block text-sm font-medium">Sarah Johnson</span>
+                  <ChevronDownIcon className="h-4 w-4" />
                 </button>
 
-                {/* Profile Menu Dropdown - Optimized for 400x620 */}
+                {/* Profile Menu Dropdown */}
                 <AnimatePresence>
                   {showProfileMenu && (
                     <>
@@ -289,29 +331,38 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                         onClick={() => setShowProfileMenu(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-40 sm:w-48 lg:w-56 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        className="absolute right-0 mt-2 w-48 sm:w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50"
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                       >
                         <div className="py-2">
-                          <div className="px-3 py-2 border-b border-gray-200 dark:border-dark-border">
+                          <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700">
                             <p className="text-sm font-medium text-gray-900 dark:text-white">Sarah Johnson</p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">sarah@example.com</p>
                           </div>
                           <div className="py-1">
-                            <Link
-                              href="/client-dashboard/settings"
-                              className="flex items-center px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-surface transition-colors mobile-touch-target"
-                              onClick={() => setShowProfileMenu(false)}
+                            <button
+                              onClick={() => handleSidebarItemClick('/client-dashboard/settings')}
+                              className="flex items-center w-full px-4 py-3 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                              style={{
+                                minHeight: '44px',
+                                WebkitTapHighlightColor: 'transparent',
+                                touchAction: 'manipulation'
+                              }}
                             >
                               <UserIcon className="h-4 w-4 mr-3" />
                               Profile Settings
-                            </Link>
+                            </button>
                             <button
                               onClick={handleLogout}
-                              className="flex items-center w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mobile-touch-target"
+                              className="flex items-center w-full px-4 py-3 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                              style={{
+                                minHeight: '44px',
+                                WebkitTapHighlightColor: 'transparent',
+                                touchAction: 'manipulation'
+                              }}
                             >
                               <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
                               Sign Out
@@ -326,65 +377,16 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
 
               {/* Theme Toggle */}
               <motion.div
-                variants={staggerItem}
                 whileHover={{ scale: 1.05 }}
               >
                 <ThemeToggle />
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </motion.nav>
 
       <div className="flex">
-        {/* Sidebar Navigation - Desktop */}
-        <motion.aside 
-          className="hidden lg:block w-64 bg-white dark:bg-dark-surface shadow-lg min-h-screen"
-          variants={fadeInDown}
-          initial="hidden"
-          animate="visible"
-        >
-          <div className="p-6">
-            <nav className="space-y-2">
-              {sidebarItems.map((item, index) => (
-                <motion.div
-                  key={item.id}
-                  variants={staggerItem}
-                  whileHover={{ x: 5 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                      currentActiveSection === item.id
-                        ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-card hover:text-primary-600 dark:hover:text-primary-400'
-                    }`}
-                  >
-                    <item.icon className="h-5 w-5" />
-                    <span>{item.label}</span>
-                  </Link>
-                </motion.div>
-              ))}
-              
-              {/* Logout */}
-              <motion.div
-                variants={staggerItem}
-                whileHover={{ x: 5 }}
-                className="pt-4 border-t border-gray-200 dark:border-dark-border"
-              >
-                <button 
-                  onClick={handleLogout}
-                  className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full mobile-touch-target focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                  aria-label="Logout"
-                >
-                  <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                  <span>Logout</span>
-                </button>
-              </motion.div>
-            </nav>
-          </div>
-        </motion.aside>
-
         {/* Mobile Sidebar Overlay */}
         <AnimatePresence>
           {isSidebarOpen && (
@@ -397,68 +399,93 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                 onClick={() => setIsSidebarOpen(false)}
               />
               <motion.aside
-                className="fixed left-0 top-0 h-full w-64 bg-white dark:bg-dark-surface shadow-xl z-50 lg:hidden"
+                className="fixed left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-xl z-50 lg:hidden"
                 initial={{ x: '-100%' }}
                 animate={{ x: 0 }}
                 exit={{ x: '-100%' }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
               >
                 <div className="p-6">
-                  <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center justify-between mb-8">
                     <Logo
-                      width={160}
-                      height={55}
-                      className="h-12 w-auto"
+                      width={120}
+                      height={40}
+                      className="h-8 w-auto"
                       alt="Odysia Logo"
                     />
                     <button
                       onClick={() => setIsSidebarOpen(false)}
-                      className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 p-2 rounded-lg transition-colors"
+                      className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors"
                       aria-label="Close mobile menu"
+                      style={{
+                        minHeight: '44px',
+                        minWidth: '44px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
                     >
                       <XMarkIcon className="h-6 w-6" />
                     </button>
                   </div>
                   
                   <nav className="space-y-2">
-                    {sidebarItems.map((item, index) => (
-                      <motion.div
-                        key={item.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                        whileHover={{ x: 5 }}
-                      >
-                        <Link
-                          href={item.href}
-                          className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 ${
-                            currentActiveSection === item.id
-                              ? 'bg-primary-100 dark:bg-primary-900/20 text-primary-700 dark:text-primary-400'
-                              : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-card hover:text-primary-600 dark:hover:text-primary-400'
-                          }`}
-                          onClick={() => setIsSidebarOpen(false)}
+                    {sidebarItems.map((item, index) => {
+                      const Icon = item.icon
+                      const isActive = currentActiveSection === item.id
+                      
+                      return (
+                        <motion.div
+                          key={item.id}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.1 }}
+                          whileHover={{ x: 4 }}
+                          whileTap={{ scale: 0.98 }}
                         >
-                          <item.icon className="h-5 w-5" />
-                          <span>{item.label}</span>
-                        </Link>
-                      </motion.div>
-                    ))}
+                          <button
+                            onClick={() => handleSidebarItemClick(item.href)}
+                            className={`w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-left transition-all duration-200 ${
+                              isActive
+                                ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                                : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                            }`}
+                            style={{
+                              minHeight: '56px',
+                              WebkitTapHighlightColor: 'transparent',
+                              touchAction: 'manipulation'
+                            }}
+                          >
+                            <Icon className={`h-6 w-6 flex-shrink-0 ${
+                              isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'
+                            }`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-base">{item.label}</div>
+                            </div>
+                          </button>
+                        </motion.div>
+                      )
+                    })}
                     
                     {/* Logout */}
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: sidebarItems.length * 0.1 }}
-                      whileHover={{ x: 5 }}
-                      className="pt-4 border-t border-gray-200 dark:border-dark-border"
+                      whileHover={{ x: 4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="pt-4 border-t border-gray-200 dark:border-gray-700"
                     >
                       <button 
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors w-full mobile-touch-target focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                        aria-label="Logout"
+                        className="w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                        style={{
+                          minHeight: '56px',
+                          WebkitTapHighlightColor: 'transparent',
+                          touchAction: 'manipulation'
+                        }}
                       >
-                        <ArrowRightOnRectangleIcon className="h-5 w-5" />
-                        <span>Logout</span>
+                        <ArrowRightOnRectangleIcon className="h-6 w-6 flex-shrink-0" />
+                        <div className="font-medium text-base">Logout</div>
                       </button>
                     </motion.div>
                   </nav>
@@ -468,9 +495,77 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
           )}
         </AnimatePresence>
 
-        {/* Main Content */}
+        {/* Desktop Sidebar - Hidden on mobile */}
+        <motion.aside 
+          className="hidden lg:block w-80 bg-white dark:bg-gray-800 shadow-sm min-h-screen border-r border-gray-200 dark:border-gray-700"
+          variants={fadeInDown}
+          initial="hidden"
+          animate="visible"
+        >
+          <div className="p-6">
+            <nav className="space-y-2">
+              {sidebarItems.map((item, index) => {
+                const Icon = item.icon
+                const isActive = currentActiveSection === item.id
+                
+                return (
+                  <motion.div
+                    key={item.id}
+                    variants={staggerItem}
+                    whileHover={{ x: 4 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <button
+                      onClick={() => handleSidebarItemClick(item.href)}
+                      className={`w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-left transition-all duration-200 ${
+                        isActive
+                          ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                      }`}
+                      style={{
+                        minHeight: '56px',
+                        WebkitTapHighlightColor: 'transparent',
+                        touchAction: 'manipulation'
+                      }}
+                    >
+                      <Icon className={`h-6 w-6 flex-shrink-0 ${
+                        isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'
+                      }`} />
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-base">{item.label}</div>
+                      </div>
+                    </button>
+                  </motion.div>
+                )
+              })}
+              
+              {/* Logout */}
+              <motion.div
+                variants={staggerItem}
+                whileHover={{ x: 4 }}
+                whileTap={{ scale: 0.98 }}
+                className="pt-4 border-t border-gray-200 dark:border-gray-700"
+              >
+                <button 
+                  onClick={handleLogout}
+                  className="w-full flex items-center space-x-4 px-4 py-4 rounded-xl text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                  style={{
+                    minHeight: '56px',
+                    WebkitTapHighlightColor: 'transparent',
+                    touchAction: 'manipulation'
+                  }}
+                >
+                  <ArrowRightOnRectangleIcon className="h-6 w-6 flex-shrink-0" />
+                  <div className="font-medium text-base">Logout</div>
+                </button>
+              </motion.div>
+            </nav>
+          </div>
+        </motion.aside>
+
+        {/* Main Content - Mobile Optimized */}
         <main className="flex-1 min-h-screen">
-          <div className="p-3 sm:p-4 lg:p-6 xl:p-8">
+          <div className="p-4 sm:p-6 lg:p-8">
             {children}
           </div>
         </main>

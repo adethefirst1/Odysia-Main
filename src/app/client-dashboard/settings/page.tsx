@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   UserIcon,
@@ -8,9 +8,10 @@ import {
   CreditCardIcon,
   BellIcon,
   IdentificationIcon,
-  ExclamationTriangleIcon
+  ExclamationTriangleIcon,
+  Bars3Icon,
+  XMarkIcon
 } from '@heroicons/react/24/outline'
-import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
 import { 
   ProfileSection, 
   SecuritySection, 
@@ -67,13 +68,45 @@ const settingsSections: SettingsSection[] = [
   }
 ]
 
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } }
+}
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1
+    }
+  }
+}
+
+const staggerItem = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 }
+}
+
 export default function ClientSettingsPage() {
   const [activeSection, setActiveSection] = useState('profile')
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [showDeactivateModal, setShowDeactivateModal] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
 
-  const profileCompletion = 70 // This would be calculated based on filled fields
+  // Check if mobile on mount and resize
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const profileCompletion = 70
 
   const handleSectionChange = (sectionId: string) => {
     setActiveSection(sectionId)
@@ -88,7 +121,7 @@ export default function ClientSettingsPage() {
         animate="visible"
         className="max-w-7xl mx-auto"
       >
-        {/* Header */}
+        {/* Header - Mobile Optimized */}
         <div className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700">
           <div className="px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-center justify-between">
@@ -102,7 +135,7 @@ export default function ClientSettingsPage() {
               {/* Mobile menu button */}
               <button
                 onClick={() => setShowMobileMenu(!showMobileMenu)}
-                className="lg:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors mobile-touch-target"
+                className="lg:hidden p-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors rounded-lg"
                 style={{
                   minHeight: '44px',
                   minWidth: '44px',
@@ -110,7 +143,11 @@ export default function ClientSettingsPage() {
                   touchAction: 'manipulation'
                 }}
               >
-                <UserIcon className="h-6 w-6" />
+                {showMobileMenu ? (
+                  <XMarkIcon className="h-6 w-6" />
+                ) : (
+                  <Bars3Icon className="h-6 w-6" />
+                )}
               </button>
             </div>
 
@@ -135,59 +172,80 @@ export default function ClientSettingsPage() {
         </div>
 
         <div className="flex flex-col lg:flex-row">
-          {/* Sidebar */}
-          <motion.aside 
-            variants={fadeInUp}
-            className={`lg:w-80 lg:min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 ${
-              showMobileMenu ? 'block' : 'hidden lg:block'
-            }`}
-          >
-            <div className="p-4">
-              <nav className="space-y-2">
-                {settingsSections.map((section, index) => {
-                  const Icon = section.icon
-                  const isActive = activeSection === section.id
-                  
-                  return (
-                    <motion.div
-                      key={section.id}
-                      variants={staggerItem}
-                      whileHover={{ x: 4 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <button
-                        onClick={() => handleSectionChange(section.id)}
-                        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 mobile-touch-target ${
-                          isActive
-                            ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
-                            : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
-                        }`}
-                        style={{
-                          minHeight: '56px',
-                          WebkitTapHighlightColor: 'transparent',
-                          touchAction: 'manipulation'
-                        }}
-                      >
-                        <Icon className={`h-5 w-5 flex-shrink-0 ${
-                          isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'
-                        }`} />
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium text-sm">{section.label}</div>
-                          <div className={`text-xs mt-0.5 ${
-                            isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
-                          }`}>
-                            {section.description}
-                          </div>
-                        </div>
-                      </button>
-                    </motion.div>
-                  )
-                })}
-              </nav>
-            </div>
-          </motion.aside>
+          {/* Sidebar - Mobile Overlay */}
+          <AnimatePresence>
+            {(showMobileMenu || !isMobile) && (
+              <>
+                {isMobile && (
+                  <motion.div
+                    className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={() => setShowMobileMenu(false)}
+                  />
+                )}
+                <motion.aside 
+                  variants={fadeInUp}
+                  className={`${
+                    isMobile 
+                      ? 'fixed left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 shadow-xl z-50 lg:hidden' 
+                      : 'lg:w-80 lg:min-h-screen bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700'
+                  }`}
+                  initial={isMobile ? { x: '-100%' } : { opacity: 0, y: 20 }}
+                  animate={isMobile ? { x: 0 } : { opacity: 1, y: 0 }}
+                  exit={isMobile ? { x: '-100%' } : { opacity: 0, y: 20 }}
+                  transition={isMobile ? { type: "spring", damping: 25, stiffness: 200 } : { duration: 0.3 }}
+                >
+                  <div className="p-4">
+                    <nav className="space-y-2">
+                      {settingsSections.map((section, index) => {
+                        const Icon = section.icon
+                        const isActive = activeSection === section.id
+                        
+                        return (
+                          <motion.div
+                            key={section.id}
+                            variants={staggerItem}
+                            whileHover={{ x: 4 }}
+                            whileTap={{ scale: 0.98 }}
+                          >
+                            <button
+                              onClick={() => handleSectionChange(section.id)}
+                              className={`w-full flex items-center space-x-3 px-4 py-4 rounded-xl text-left transition-all duration-200 ${
+                                isActive
+                                  ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
+                                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white'
+                              }`}
+                              style={{
+                                minHeight: '56px',
+                                WebkitTapHighlightColor: 'transparent',
+                                touchAction: 'manipulation'
+                              }}
+                            >
+                              <Icon className={`h-6 w-6 flex-shrink-0 ${
+                                isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400'
+                              }`} />
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium text-base">{section.label}</div>
+                                <div className={`text-sm mt-0.5 ${
+                                  isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'
+                                }`}>
+                                  {section.description}
+                                </div>
+                              </div>
+                            </button>
+                          </motion.div>
+                        )
+                      })}
+                    </nav>
+                  </div>
+                </motion.aside>
+              </>
+            )}
+          </AnimatePresence>
 
-          {/* Main Content */}
+          {/* Main Content - Mobile Optimized */}
           <main className="flex-1 p-4 sm:p-6 lg:p-8">
             <AnimatePresence mode="wait">
               <motion.div
