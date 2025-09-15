@@ -18,12 +18,14 @@ import {
   ChatBubbleLeftRightIcon
 } from '@heroicons/react/24/outline'
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function ClientProjectsPage() {
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [viewMode, setViewMode] = useState<'list' | 'cards'>('cards')
   const router = useRouter()
+  const { formatAmount } = useCurrency()
 
   const projects = [
     {
@@ -324,7 +326,7 @@ export default function ClientProjectsPage() {
                     <div className="flex items-center justify-between text-xs sm:text-sm">
                       <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                         <CurrencyDollarIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                        <span>₦{(project.budget * 1000).toLocaleString()}</span>
+                        <span>{formatAmount(project.budget * 1000)}</span>
                       </div>
                       <div className="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
                         <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
@@ -426,7 +428,7 @@ export default function ClientProjectsPage() {
                       </div>
                       <div className="flex items-center space-x-2">
                         <CurrencyDollarIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
-                        <span>₦{(project.budget * 1000).toLocaleString()}</span>
+                        <span>{formatAmount(project.budget * 1000)}</span>
                       </div>
                       <div className="flex items-center space-x-2">
                         <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />

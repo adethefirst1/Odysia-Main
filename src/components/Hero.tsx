@@ -89,24 +89,26 @@ export default function Hero() {
             </motion.div>
           </motion.div>
           
-          {/* Animated headline with typewriter effect */}
+          {/* Animated headline with improved text arrangement */}
           <motion.h1 
-            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight"
+            className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 leading-tight tracking-tight break-words hero-text text-arrangement-fix"
             variants={fadeInUp}
           >
-            {typewriterText}
-            <motion.span
-              animate={{ opacity: [1, 0, 1] }}
-              transition={{ duration: 1, repeat: Infinity }}
-              className="inline-block ml-1"
-            >
-              |
-            </motion.span>
+            <span className="block">
+              {typewriterText}
+              <motion.span
+                animate={{ opacity: [1, 0, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+                className="inline-block ml-1"
+              >
+                |
+              </motion.span>
+            </span>
           </motion.h1>
           
-          {/* Animated subtitle */}
+          {/* Animated subtitle with improved spacing */}
           <motion.p 
-            className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-4xl mx-auto px-4 sm:px-0 leading-relaxed"
+            className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-4xl mx-auto px-4 sm:px-0 leading-relaxed tracking-wide text-arrangement-fix"
             variants={fadeInUp}
             transition={{ delay: 0.2 }}
           >
@@ -154,10 +156,10 @@ export default function Hero() {
               className="w-full sm:w-auto"
             >
               <Link
-                href="/contact"
+                href="/start-project"
                 className="bg-primary-600 dark:bg-primary-500 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-primary-700 dark:hover:bg-primary-600 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl inline-block w-full sm:w-auto text-center mobile-touch-target"
               >
-                {HERO_CONTENT.primaryCTA}
+                Start Your Project
               </Link>
             </motion.div>
             <motion.div

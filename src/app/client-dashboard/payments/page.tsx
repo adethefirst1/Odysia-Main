@@ -25,12 +25,14 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function ClientPaymentsPage() {
   const [activeTab, setActiveTab] = useState('overview')
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [dateRange, setDateRange] = useState('all')
+  const { formatAmount } = useCurrency()
 
   const escrowBalance = {
     total: 15400,
@@ -278,7 +280,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ₦{escrowBalance.total.toLocaleString()}
+              {formatAmount(escrowBalance.total)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Securely held funds
@@ -293,7 +295,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ₦{escrowBalance.released.toLocaleString()}
+              {formatAmount(escrowBalance.released)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Paid to experts
@@ -308,7 +310,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ₦{escrowBalance.available.toLocaleString()}
+              {formatAmount(escrowBalance.available)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Ready for new projects
@@ -323,7 +325,7 @@ export default function ClientPaymentsPage() {
               </div>
             </div>
             <p className="text-3xl font-bold text-gray-900 dark:text-white">
-              ₦{escrowBalance.pending.toLocaleString()}
+              {formatAmount(escrowBalance.pending)}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
               Awaiting completion
@@ -388,9 +390,9 @@ export default function ClientPaymentsPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className={`font-semibold ${getTypeColor(payment.type)}`}>
-                              ${payment.amount.toLocaleString()}
-                            </p>
+                                                         <p className={`font-semibold ${getTypeColor(payment.type)}`}>
+                               {formatAmount(payment.amount)}
+                             </p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">{payment.date}</p>
                           </div>
                         </motion.div>
@@ -458,10 +460,10 @@ export default function ClientPaymentsPage() {
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
                           {milestone.description}
                         </p>
-                        <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
-                          <span>Amount: ${milestone.amount.toLocaleString()}</span>
-                          <span>Due: {milestone.dueDate}</span>
-                        </div>
+                                                 <div className="flex items-center space-x-4 text-sm text-gray-600 dark:text-gray-400">
+                           <span>Amount: {formatAmount(milestone.amount)}</span>
+                           <span>Due: {milestone.dueDate}</span>
+                         </div>
                       </div>
                       <div className="ml-4">
                         {milestone.status === 'ready' && (
@@ -521,11 +523,11 @@ export default function ClientPaymentsPage() {
                           <td className="py-4 px-4">
                             <p className="text-gray-900 dark:text-white">{payment.expert}</p>
                           </td>
-                          <td className="py-4 px-4">
-                            <p className="font-semibold text-gray-900 dark:text-white">
-                              ${payment.amount.toLocaleString()}
-                            </p>
-                          </td>
+                                                     <td className="py-4 px-4">
+                             <p className="font-semibold text-gray-900 dark:text-white">
+                               {formatAmount(payment.amount)}
+                             </p>
+                           </td>
                           <td className="py-4 px-4">
                             <p className="text-gray-600 dark:text-gray-400">{payment.date}</p>
                           </td>

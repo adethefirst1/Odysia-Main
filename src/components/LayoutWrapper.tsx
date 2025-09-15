@@ -16,7 +16,8 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
     '/client-dashboard',
     '/client-login',
     '/expert-login',
-    '/experts'
+    '/experts',
+    '/dashboard'
   ]
   
   const shouldExcludeNavbarFooter = excludeNavbarFooter.some(route => 

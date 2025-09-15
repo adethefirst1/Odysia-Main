@@ -12,9 +12,11 @@ import {
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function Earnings() {
   const [selectedPeriod, setSelectedPeriod] = useState('month')
+  const { formatAmount } = useCurrency()
 
   const earningsData = [
     {
@@ -58,28 +60,28 @@ export default function Earnings() {
   const stats = [
     {
       title: 'Total Earnings',
-      value: '₦750,000',
+      value: formatAmount(750000),
       change: '+15%',
       changeType: 'positive',
       icon: CurrencyDollarIcon
     },
     {
       title: 'This Month',
-      value: '₦350,000',
+      value: formatAmount(350000),
       change: '+12%',
       changeType: 'positive',
       icon: BanknotesIcon
     },
     {
       title: 'Escrow Balance',
-      value: '₦250,000',
+      value: formatAmount(250000),
       change: '+8%',
       changeType: 'positive',
       icon: ClockIcon
     },
     {
       title: 'Pending Payments',
-      value: '₦150,000',
+      value: formatAmount(150000),
       change: '-5%',
       changeType: 'negative',
       icon: ExclamationTriangleIcon
@@ -269,7 +271,7 @@ export default function Earnings() {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900 dark:text-white">
-                      ₦{earning.amount.toLocaleString()}
+                      {formatAmount(earning.amount)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -305,19 +307,19 @@ export default function Earnings() {
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Total Earnings</span>
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                ₦{totalEarnings.toLocaleString()}
+                {formatAmount(totalEarnings)}
               </span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-600 dark:text-gray-400">Escrow Balance</span>
               <span className="text-sm font-semibold text-blue-600 dark:text-blue-400">
-                ₦{escrowBalance.toLocaleString()}
+                {formatAmount(escrowBalance)}
               </span>
             </div>
             <div className="flex items-center justify-between pt-2 border-t border-gray-200 dark:border-dark-border">
               <span className="text-sm font-medium text-gray-900 dark:text-white">Available Balance</span>
               <span className="text-sm font-bold text-green-600 dark:text-green-400">
-                ₦{availableBalance.toLocaleString()}
+                {formatAmount(availableBalance)}
               </span>
             </div>
           </div>
@@ -357,7 +359,7 @@ export default function Earnings() {
                   Payment received
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  ₦200,000 from E-commerce Website
+                  {formatAmount(200000)} from E-commerce Website
                 </p>
               </div>
             </div>
@@ -368,7 +370,7 @@ export default function Earnings() {
                   Payment pending
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400">
-                  ₦150,000 from Mobile App Design
+                  {formatAmount(150000)} from Mobile App Design
                 </p>
               </div>
             </div>

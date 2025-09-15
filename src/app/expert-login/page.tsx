@@ -1,23 +1,33 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState, useEffect, Suspense } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { EyeIcon, EyeSlashIcon, UserIcon, ArrowLeftIcon } from '@heroicons/react/24/outline'
+import { EyeIcon, EyeSlashIcon, UserIcon, ArrowLeftIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
 import { useAuth } from '@/lib/contexts/AuthContext'
 import { fadeInUp, staggerContainer } from '@/lib/animations'
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
 import Link from 'next/link'
 
-export default function ExpertLogin() {
+function ExpertLoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState('')
+  const [successMessage, setSuccessMessage] = useState('')
   const { login } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Check for success message from signup
+  useEffect(() => {
+    const message = searchParams.get('message')
+    if (message === 'signup-success') {
+      setSuccessMessage('Account created successfully! Please sign in with your credentials.')
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -121,6 +131,19 @@ export default function ExpertLogin() {
                   </motion.div>
                 )}
 
+                {successMessage && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                      <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+                    </div>
+                  </motion.div>
+                )}
+
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Email Address
@@ -208,10 +231,10 @@ export default function ExpertLogin() {
 
               <div className="mt-6 pt-6 border-t border-gray-200 dark:border-dark-border">
                 <p className="text-sm text-gray-600 dark:text-gray-400 text-center mb-4">
-                  Don&apos;t have an account?{' '}
-                  <a href="/register" className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500">
-                    Sign up here
-                  </a>
+                  Want to join as an expert?{' '}
+                  <Link href="/expert-application" className="font-medium text-primary-600 dark:text-primary-400 hover:text-primary-500">
+                    Apply here
+                  </Link>
                 </p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
                   Demo credentials: expert@odysia.com / password123
@@ -478,5 +501,13 @@ export default function ExpertLogin() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function ExpertLogin() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ExpertLoginContent />
+    </Suspense>
   )
 } 

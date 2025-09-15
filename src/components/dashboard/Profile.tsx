@@ -16,8 +16,10 @@ import {
   CurrencyDollarIcon
 } from '@heroicons/react/24/outline'
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function Profile() {
+  const { formatAmount } = useCurrency()
   const [isEditing, setIsEditing] = useState(false)
   const [availability, setAvailability] = useState('available')
   const [newSkill, setNewSkill] = useState('')
@@ -47,7 +49,7 @@ export default function Profile() {
     email: 'john.expert@example.com',
     bio: 'Experienced full-stack developer with 5+ years of expertise in React, Node.js, and modern web technologies. Passionate about creating scalable and user-friendly applications.',
     location: 'Lagos, Nigeria',
-    hourlyRate: '₦25,000',
+    hourlyRate: formatAmount(25000),
     skills: ['React', 'Node.js', 'TypeScript', 'Python', 'AWS', 'Docker'],
     portfolio: [
       {

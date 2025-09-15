@@ -17,11 +17,13 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { fadeInUp, staggerContainer, staggerItem } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function ClientProposalsPage() {
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const { formatAmount } = useCurrency()
 
   const proposals = [
     {
@@ -37,7 +39,7 @@ export default function ClientProposalsPage() {
         bio: "Full-stack developer with 8+ years experience in e-commerce and web applications.",
         location: "San Francisco, CA"
       },
-      budget: "₦8,500,000",
+      budget: formatAmount(8500000),
       timeline: "4 weeks",
       submittedDate: "Dec 5, 2024",
       status: "pending",
@@ -57,7 +59,7 @@ export default function ClientProposalsPage() {
         bio: "Mobile app specialist with expertise in cross-platform development.",
         location: "Austin, TX"
       },
-      budget: "₦12,000,000",
+      budget: formatAmount(12000000),
       timeline: "6 weeks",
       submittedDate: "Dec 4, 2024",
       status: "accepted",
@@ -77,7 +79,7 @@ export default function ClientProposalsPage() {
         bio: "Backend developer specializing in scalable APIs and cloud infrastructure.",
         location: "Seattle, WA"
       },
-      budget: "₦6,200,000",
+      budget: formatAmount(6200000),
       timeline: "3 weeks",
       submittedDate: "Dec 3, 2024",
       status: "rejected",

@@ -12,9 +12,11 @@ import {
   ArrowTrendingUpIcon
 } from '@heroicons/react/24/outline'
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function DashboardHome() {
   const router = useRouter()
+  const { formatAmount } = useCurrency()
   
   const handleNavigation = (path: string) => {
     router.push(path)
@@ -29,7 +31,7 @@ export default function DashboardHome() {
     },
     {
       title: 'This Month',
-      value: '₦350k',
+      value: formatAmount(350000),
       icon: CurrencyDollarIcon,
       color: 'bg-green-500',
       change: '+12% from last month'
@@ -61,16 +63,16 @@ export default function DashboardHome() {
     {
       id: 3,
       type: 'payment',
-      message: 'Payment of ₦150,000 has been released to your account',
+      message: `Payment of ${formatAmount(150000)} has been released to your account`,
       time: '2 days ago',
       urgent: false
     }
   ]
 
   const recentEarnings = [
-    { project: 'E-commerce Website', amount: '₦200,000', status: 'completed' },
-    { project: 'Mobile App Design', amount: '₦150,000', status: 'pending' },
-    { project: 'Brand Identity', amount: '₦100,000', status: 'in-progress' }
+    { project: 'E-commerce Website', amount: formatAmount(200000), status: 'completed' },
+    { project: 'Mobile App Design', amount: formatAmount(150000), status: 'pending' },
+    { project: 'Brand Identity', amount: formatAmount(100000), status: 'in-progress' }
   ]
 
   return (
@@ -227,7 +229,7 @@ export default function DashboardHome() {
                 Total This Month
               </span>
               <span className="text-lg font-bold text-gray-900 dark:text-white">
-                ₦450,000
+                {formatAmount(450000)}
               </span>
             </div>
           </div>

@@ -83,10 +83,10 @@ export default function ExpertSection() {
           transition={{ delay: 0.4 }}
         >
           <Link
-            href="/experts"
+            href="/expert-application"
             className="bg-primary-600 dark:bg-primary-500 text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-lg sm:text-xl font-semibold hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors mobile-touch-target inline-block transform hover:scale-105 shadow-lg hover:shadow-xl"
           >
-            Join as Expert
+            Apply as Expert
           </Link>
         </motion.div>
       </div>

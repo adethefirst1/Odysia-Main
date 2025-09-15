@@ -14,6 +14,7 @@ import {
   IdentificationIcon,
   ExclamationTriangleIcon
 } from '@heroicons/react/24/outline'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 // Profile Section Component
 export function ProfileSection() {
@@ -279,6 +280,7 @@ export function SecuritySection() {
 
 // Payments Section Component
 export function PaymentsSection() {
+  const { formatAmount } = useCurrency()
   const [walletBalance] = useState(250000)
   
   const transactions = [
@@ -307,7 +309,7 @@ export function PaymentsSection() {
         <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">Wallet Balance</h3>
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-6 text-white">
           <p className="text-sm opacity-90">Available Balance</p>
-          <p className="text-3xl font-bold">₦{walletBalance.toLocaleString()}</p>
+          <p className="text-3xl font-bold">{formatAmount(walletBalance)}</p>
           <p className="text-sm opacity-90 mt-1">Escrow funds for active projects</p>
         </div>
       </div>
@@ -327,7 +329,7 @@ export function PaymentsSection() {
                 <p className={`text-sm font-medium ${
                   transaction.type === 'credit' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
                 }`}>
-                  {transaction.type === 'credit' ? '+' : '-'}₦{transaction.amount.toLocaleString()}
+                  {transaction.type === 'credit' ? '+' : '-'}{formatAmount(transaction.amount)}
                 </p>
                 <span className={`text-xs px-2 py-1 rounded-full ${
                   transaction.status === 'completed' 

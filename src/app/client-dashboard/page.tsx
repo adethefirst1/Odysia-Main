@@ -19,6 +19,7 @@ import {
   DocumentTextIcon,
   CreditCardIcon
 } from '@heroicons/react/24/outline'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 // Simplified animations for better performance
 const simpleFadeIn = {
@@ -34,6 +35,7 @@ const slideUp = {
 export default function ClientDashboardPage() {
   const [clientName] = useState("Sarah Johnson")
   const [lastLogin] = useState("2 hours ago")
+  const { formatAmount } = useCurrency()
 
   const summaryStats = [
     {
@@ -65,8 +67,8 @@ export default function ClientDashboardPage() {
     },
     {
       title: "Total Spent",
-      value: "₦24,500,000",
-      change: "+₦3,200,000",
+      value: formatAmount(24500000),
+      change: `+${formatAmount(3200000)}`,
       changeType: "positive",
       icon: CurrencyDollarIcon,
       color: "bg-purple-500",
@@ -97,7 +99,7 @@ export default function ClientDashboardPage() {
       id: 3,
       type: "payment_released",
       title: "Payment released",
-      description: "₦2,500,000 released to Maria Rodriguez for UI/UX Design System",
+      description: `${formatAmount(2500000)} released to Maria Rodriguez for UI/UX Design System`,
       timestamp: "1 day ago",
       icon: CreditCardIcon,
       color: "bg-purple-500"

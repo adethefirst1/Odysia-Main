@@ -23,8 +23,10 @@ import {
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function ProjectDetailPage() {
+  const { formatAmount } = useCurrency()
   const router = useRouter()
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [isAddingNote, setIsAddingNote] = useState(false)
@@ -39,7 +41,7 @@ export default function ProjectDetailPage() {
     status: 'in-progress',
     startDate: '2024-01-15',
     deadline: '2024-03-15',
-    budget: '₦500,000',
+    budget: '500,000',
     description: 'Full-stack e-commerce platform with payment integration and admin dashboard.',
     githubUrl: 'https://github.com/techcorp/ecommerce-platform',
     progress: 65
@@ -239,7 +241,7 @@ export default function ProjectDetailPage() {
                 <span className="text-sm text-gray-600 dark:text-gray-400">{project.progress}%</span>
               </div>
               <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                {project.budget}
+                {formatAmount(parseInt(project.budget))}
               </span>
             </div>
           </div>

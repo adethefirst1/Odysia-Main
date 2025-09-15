@@ -51,10 +51,10 @@ export default function CTA() {
             whileTap={{ scale: 0.95 }}
           >
             <Link
-              href="/contact"
+              href="/start-project"
               className="bg-white text-primary-600 px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-lg sm:text-xl font-semibold hover:bg-gray-100 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl mobile-touch-target w-full sm:w-auto text-center inline-block"
             >
-              {CTA_CONTENT.primaryButton}
+              Start Your Project
             </Link>
           </motion.div>
           <motion.div
@@ -62,10 +62,10 @@ export default function CTA() {
             whileTap={{ scale: 0.95 }}
           >
             <Link
-              href="/experts"
+              href="/expert-application"
               className="border-2 border-white text-white px-8 sm:px-10 py-4 sm:py-5 rounded-xl text-lg sm:text-xl font-semibold hover:bg-white hover:text-primary-600 transform hover:scale-105 transition-all duration-200 mobile-touch-target w-full sm:w-auto text-center inline-block"
             >
-              {CTA_CONTENT.secondaryButton}
+              Apply as Expert
             </Link>
           </motion.div>
           <motion.div

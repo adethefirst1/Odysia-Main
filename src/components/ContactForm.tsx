@@ -2,8 +2,10 @@
 
 import { useState } from 'react'
 import { submitContactForm } from '@/lib/api'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function ContactForm() {
+  const { formatAmount } = useCurrency()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -147,10 +149,10 @@ export default function ContactForm() {
               className="w-full px-4 py-3 border border-gray-300 dark:border-dark-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors bg-white dark:bg-dark-surface text-gray-900 dark:text-dark-text"
             >
               <option value="">Select budget range</option>
-              <option value="under-5k">Under ₦5,000,000</option>
-              <option value="5k-15k">₦5,000,000 - ₦15,000,000</option>
-              <option value="15k-50k">₦15,000,000 - ₦50,000,000</option>
-              <option value="50k-plus">₦50,000,000+</option>
+                              <option value="under-5k">Under {formatAmount(5000000)}</option>
+                <option value="5k-15k">{formatAmount(5000000)} - {formatAmount(15000000)}</option>
+                <option value="15k-50k">{formatAmount(15000000)} - {formatAmount(50000000)}</option>
+                <option value="50k-plus">{formatAmount(50000000)}+</option>
             </select>
           </div>
           

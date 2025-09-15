@@ -8,7 +8,6 @@ import { usePathname } from 'next/navigation'
 import { 
   HomeIcon, 
   FolderIcon, 
-  ClockIcon, 
   ChatBubbleLeftRightIcon, 
   CurrencyDollarIcon, 
   UserIcon, 
@@ -18,14 +17,14 @@ import {
   PaperAirplaneIcon,
   Bars3Icon,
   XMarkIcon,
-  CheckIcon,
   ExclamationTriangleIcon,
-  InformationCircleIcon
+  CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
 import { fadeInDown, staggerContainer, staggerItem } from '@/lib/animations'
 import { useAuth } from '@/lib/contexts/AuthContext'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 interface DashboardLayoutProps {
   children: React.ReactNode
@@ -35,7 +34,7 @@ interface DashboardLayoutProps {
 const sidebarItems = [
   { id: 'dashboard', label: 'Dashboard Home', icon: HomeIcon, href: '/dashboard' },
   { id: 'projects', label: 'My Projects', icon: FolderIcon, href: '/dashboard/projects' },
-  { id: 'milestones', label: 'Milestones & Submissions', icon: ClockIcon, href: '/dashboard/milestones' },
+  { id: 'milestones', label: 'Milestones & Submissions', icon: CheckCircleIcon, href: '/dashboard/milestones' },
   { id: 'messages', label: 'Messages', icon: ChatBubbleLeftRightIcon, href: '/dashboard/messages' },
   { id: 'earnings', label: 'Earnings', icon: CurrencyDollarIcon, href: '/dashboard/earnings' },
   { id: 'profile', label: 'Portfolio/Profile', icon: UserIcon, href: '/dashboard/profile' },
@@ -43,6 +42,7 @@ const sidebarItems = [
 ]
 
 export default function DashboardLayout({ children, activeSection = 'dashboard' }: DashboardLayoutProps) {
+  const { formatAmount } = useCurrency()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [notifications, setNotifications] = useState(3)
   const [messages, setMessages] = useState(2)
@@ -82,7 +82,7 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
     {
       id: 3,
       type: 'payment',
-      message: 'Payment of ₦150,000 has been released to your account',
+      message: `Payment of ${formatAmount(150000)} has been released to your account`,
       time: '2 days ago',
       urgent: false,
       read: true

@@ -12,6 +12,10 @@ export const NAVIGATION_LINKS = [
     href: '/about',
   },
   {
+    label: 'Start Project',
+    href: '/start-project',
+  },
+  {
     label: 'Contact',
     href: '/contact',
   },
@@ -31,6 +35,7 @@ export const FOOTER_NAVIGATION = {
     { label: 'Project Management', href: '/services#project-management' },
   ],
   resources: [
+    { label: 'Start Project', href: '/start-project' },
     { label: 'Client Portal', href: '/client-login' },
     { label: 'Expert Portal', href: '/expert-login' },
     { label: 'Escrow System', href: '/escrow' },

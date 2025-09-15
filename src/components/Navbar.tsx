@@ -9,6 +9,7 @@ import Logo from '@/components/Logo'
 import { fadeInDown, staggerContainer, staggerItem, hoverScale, buttonTap } from '@/lib/animations'
 import ThemeToggle from './ThemeToggle'
 
+
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -53,7 +54,7 @@ export default function Navbar() {
                 >
                   <Link
                     href={link.href}
-                    className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-2 xl:px-3 py-2 rounded-md text-sm xl:text-base font-medium transition-colors relative group mobile-touch-target"
+                    className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-2 xl:px-3 py-2 rounded-md text-sm xl:text-base font-medium transition-colors relative group mobile-touch-target whitespace-nowrap"
                   >
                     {link.label}
                     <motion.div
@@ -79,8 +80,8 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <Link
-                href="/contact"
-                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target"
+                href="/start-project"
+                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target whitespace-nowrap"
               >
                 Start a Project
               </Link>
@@ -90,14 +91,14 @@ export default function Navbar() {
               whileHover={{ scale: 1.05 }}
             >
               <Link
-                href="/experts"
-                className="bg-primary-600 dark:bg-primary-500 text-white px-3 xl:px-4 py-2 rounded-md text-sm xl:text-base font-medium hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors relative overflow-hidden group mobile-touch-target"
+                href="/expert-application"
+                className="bg-primary-600 dark:bg-primary-500 text-white px-3 xl:px-4 py-2 rounded-md text-sm xl:text-base font-medium hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors relative overflow-hidden group mobile-touch-target whitespace-nowrap"
               >
                 <motion.span
                   className="relative z-10"
                   whileHover={{ x: 2 }}
                 >
-                  Join as Expert
+                  Apply as Expert
                 </motion.span>
                 <motion.div
                   className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10"
@@ -113,7 +114,7 @@ export default function Navbar() {
             >
               <Link
                 href="/expert-login"
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target"
+                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target whitespace-nowrap"
               >
                 Expert Login
               </Link>
@@ -124,11 +125,13 @@ export default function Navbar() {
             >
               <Link
                 href="/client-login"
-                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target"
+                className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm xl:text-base font-medium transition-colors mobile-touch-target whitespace-nowrap"
               >
                 Client Login
               </Link>
             </motion.div>
+            
+
             
             {/* Theme Toggle */}
             <motion.div
@@ -196,73 +199,58 @@ export default function Navbar() {
                 initial="hidden"
                 animate="visible"
               >
-                {/* Navigation Links */}
-                <div className="space-y-1">
-                  {NAVIGATION_LINKS.map((link, index) => (
-                    <motion.div
-                      key={link.href}
-                      variants={staggerItem}
-                      whileHover={{ x: 5 }}
-                    >
-                      <Link
-                        href={link.href}
-                        className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-4 py-3 rounded-lg text-base font-medium mobile-touch-target transition-colors"
-                        onClick={() => setIsMenuOpen(false)}
-                      >
-                        {link.label}
-                      </Link>
-                    </motion.div>
-                  ))}
-                </div>
-                
-                {/* CTA Buttons */}
-                <motion.div 
-                  className="pt-4 space-y-3 border-t border-gray-200 dark:border-dark-border"
-                  variants={staggerContainer}
-                >
+                {NAVIGATION_LINKS.map((link, index) => (
                   <motion.div
+                    key={link.href}
                     variants={staggerItem}
-                    whileHover={{ x: 5 }}
+                    whileHover={{ x: 4 }}
                   >
                     <Link
-                      href="/contact"
-                      className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 block px-4 py-3 text-base font-medium mobile-touch-target transition-colors"
+                      href={link.href}
+                      className="block text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 rounded-md text-base font-medium transition-colors mobile-touch-target"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                
+                {/* Mobile CTA Buttons */}
+                <motion.div 
+                  className="pt-4 space-y-3"
+                  variants={staggerContainer}
+                >
+                  <motion.div variants={staggerItem}>
+                    <Link
+                      href="/start-project"
+                      className="block w-full text-center bg-primary-600 dark:bg-primary-500 text-white px-4 py-3 rounded-lg text-base font-medium hover:bg-primary-700 dark:hover:bg-primary-600 transition-colors mobile-touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Start a Project
                     </Link>
                   </motion.div>
-                  <motion.div
-                    variants={staggerItem}
-                    whileHover={{ x: 5 }}
-                  >
+                  <motion.div variants={staggerItem}>
                     <Link
-                      href="/experts"
-                      className="bg-primary-600 dark:bg-primary-500 text-white block px-4 py-3 rounded-lg text-base font-medium hover:bg-primary-700 dark:hover:bg-primary-600 mobile-touch-target transition-colors"
+                      href="/expert-application"
+                      className="block w-full text-center border-2 border-primary-600 dark:border-primary-400 text-primary-600 dark:text-primary-400 px-4 py-3 rounded-lg text-base font-medium hover:bg-primary-600 dark:hover:bg-primary-500 hover:text-white dark:hover:text-white transition-colors mobile-touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
-                      Join as Expert
+                      Apply as Expert
                     </Link>
                   </motion.div>
-                  <motion.div
-                    variants={staggerItem}
-                    whileHover={{ x: 5 }}
-                  >
+                  <motion.div variants={staggerItem}>
                     <Link
                       href="/expert-login"
-                      className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-4 py-3 text-base font-medium mobile-touch-target transition-colors"
+                      className="block w-full text-center text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-4 py-3 rounded-lg text-base font-medium transition-colors mobile-touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Expert Login
                     </Link>
                   </motion.div>
-                  <motion.div
-                    variants={staggerItem}
-                    whileHover={{ x: 5 }}
-                  >
+                  <motion.div variants={staggerItem}>
                     <Link
                       href="/client-login"
-                      className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 block px-4 py-3 text-base font-medium mobile-touch-target transition-colors"
+                      className="block w-full text-center text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-4 py-3 rounded-lg text-base font-medium transition-colors mobile-touch-target"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Client Login

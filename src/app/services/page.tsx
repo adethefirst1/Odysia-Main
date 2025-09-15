@@ -26,10 +26,29 @@ export default function ServicesPage() {
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {SERVICES_DATA.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
+        </div>
+        
+        {/* CTA Section */}
+        <div className="text-center bg-white dark:bg-dark-surface rounded-2xl shadow-lg p-8 lg:p-12">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+            Ready to Start Your Project?
+          </h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">
+            Choose from our comprehensive services and let our expert team bring your vision to life
+          </p>
+          <a
+            href="/start-project"
+            className="inline-flex items-center px-8 py-4 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+          >
+            Start Your Project
+            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg>
+          </a>
         </div>
       </div>
     </div>

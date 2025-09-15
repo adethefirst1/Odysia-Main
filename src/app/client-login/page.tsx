@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { motion } from 'framer-motion'
+import { useSearchParams } from 'next/navigation'
 import { 
   EyeIcon,
   EyeSlashIcon,
@@ -14,18 +15,31 @@ import {
   CogIcon,
   ShieldCheckIcon,
   ArrowLeftIcon,
-  HomeIcon
+  HomeIcon,
+  CheckCircleIcon
 } from '@heroicons/react/24/outline'
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-export default function ClientLoginPage() {
+function ClientLoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [successMessage, setSuccessMessage] = useState('')
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // Check for success message from signup
+  useEffect(() => {
+    const message = searchParams.get('message')
+    if (message === 'signup-success') {
+      setSuccessMessage('Account created successfully! Please check your email for verification.')
+      // Clear the message after 5 seconds
+      setTimeout(() => setSuccessMessage(''), 5000)
+    }
+  }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,6 +111,20 @@ export default function ClientLoginPage() {
               <span>Back to Home</span>
             </Link>
           </motion.div>
+
+          {/* Success Message */}
+          {successMessage && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg"
+            >
+              <div className="flex items-center space-x-2">
+                <CheckCircleIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
+                <p className="text-sm text-green-600 dark:text-green-400">{successMessage}</p>
+              </div>
+            </motion.div>
+          )}
 
           {/* Login Form */}
           <motion.form variants={staggerItem} onSubmit={handleSubmit} className="space-y-6">
@@ -218,129 +246,109 @@ export default function ClientLoginPage() {
 
       {/* Right Column - Animated SVG */}
       <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-primary-600 to-primary-700 items-center justify-center p-8">
-        <div className="relative w-full h-full flex items-center justify-center">
-          {/* Background Elements */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
-            className="absolute inset-0 flex items-center justify-center"
-          >
-            <svg className="w-full h-full" viewBox="0 0 800 600" fill="none">
-              {/* Background Circles */}
-              <motion.circle
-                cx="400"
-                cy="300"
-                r="250"
-                fill="rgba(255,255,255,0.05)"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.5, delay: 0.2 }}
-              />
-              <motion.circle
-                cx="400"
-                cy="300"
-                r="180"
-                fill="rgba(255,255,255,0.03)"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.5, delay: 0.4 }}
-              />
-            </svg>
-          </motion.div>
-
-          {/* Main Illustration */}
-          <div className="relative z-10 w-full max-w-lg">
-            {/* Central Building/Office */}
+        <div className="flex flex-col items-center justify-center w-full max-w-lg">
+          {/* Main Illustration Container */}
+          <div className="relative mb-8">
+            {/* Background Circle */}
             <motion.div
-              initial={{ y: 50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 1, delay: 0.5 }}
-              className="flex justify-center mb-8"
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 1 }}
+              className="w-80 h-80 bg-white/10 rounded-full flex items-center justify-center"
             >
-              <div className="relative">
-                {/* Building Base */}
+              {/* Inner Circle */}
+              <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1, delay: 0.3 }}
+                className="w-64 h-64 bg-white/5 rounded-full flex items-center justify-center"
+              >
+                {/* Central Building */}
                 <motion.div
-                  className="w-32 h-40 bg-white rounded-lg shadow-lg"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.8, delay: 0.6 }}
-                />
-                
-                {/* Windows */}
-                <motion.div
-                  className="absolute top-4 left-4 grid grid-cols-3 gap-2"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5, delay: 1 }}
+                  className="relative"
                 >
-                  {[...Array(9)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="w-6 h-6 bg-blue-400 rounded"
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      transition={{ duration: 0.3, delay: 1.2 + i * 0.1 }}
-                    />
-                  ))}
+                  {/* Building Base */}
+                  <div className="w-24 h-32 bg-white rounded-lg shadow-lg relative">
+                    {/* Windows Grid */}
+                    <div className="absolute top-3 left-3 grid grid-cols-3 gap-1">
+                      {[...Array(9)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="w-5 h-5 bg-blue-400 rounded"
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ duration: 0.3, delay: 1 + i * 0.05 }}
+                        />
+                      ))}
+                    </div>
+                    
+                    {/* Door */}
+                    <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-600 rounded-t-lg" />
+                  </div>
+                  
+                  {/* Roof */}
+                  <motion.div
+                    className="absolute -top-2 left-0 w-24 h-3 bg-gray-300 rounded-t-lg"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ duration: 0.6, delay: 0.8 }}
+                  />
                 </motion.div>
-
-                {/* Roof */}
-                <motion.div
-                  className="absolute -top-2 left-0 w-32 h-4 bg-gray-300 rounded-t-lg"
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ duration: 0.6, delay: 0.8 }}
-                />
-              </div>
+              </motion.div>
             </motion.div>
 
-            {/* Floating Elements */}
+            {/* Floating Icons */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 1, delay: 1.5 }}
-              className="relative"
+              className="absolute inset-0"
             >
-              {/* Project Management Icons */}
+              {/* Top Left - Chart */}
               <motion.div
-                className="absolute -top-8 -left-8 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
+                className="absolute -top-4 -left-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1.6 }}
+                transition={{ duration: 0.6, delay: 1.6 }}
                 whileHover={{ scale: 1.1 }}
               >
-                <ChartBarIcon className="h-8 w-8 text-primary-600" />
+                <ChartBarIcon className="h-6 w-6 text-primary-600" />
               </motion.div>
 
+              {/* Top Right - Settings */}
               <motion.div
-                className="absolute -top-4 -right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center"
+                className="absolute -top-4 -right-4 w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 1.8 }}
+                transition={{ duration: 0.6, delay: 1.8 }}
                 whileHover={{ scale: 1.1 }}
               >
-                <CogIcon className="h-6 w-6 text-primary-600" />
+                <CogIcon className="h-5 w-5 text-primary-600" />
               </motion.div>
 
+              {/* Bottom Left - User */}
               <motion.div
-                className="absolute -bottom-8 -left-4 w-14 h-14 bg-white rounded-full shadow-lg flex items-center justify-center"
+                className="absolute -bottom-4 -left-4 w-11 h-11 bg-white rounded-full shadow-lg flex items-center justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 2.0 }}
+                transition={{ duration: 0.6, delay: 2.0 }}
                 whileHover={{ scale: 1.1 }}
               >
-                <UserIcon className="h-7 w-7 text-primary-600" />
+                <UserIcon className="h-5 w-5 text-primary-600" />
               </motion.div>
 
+              {/* Bottom Right - Building */}
               <motion.div
-                className="absolute -bottom-4 -right-8 w-16 h-16 bg-white rounded-full shadow-lg flex items-center justify-center"
+                className="absolute -bottom-4 -right-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
-                transition={{ duration: 0.8, delay: 2.2 }}
+                transition={{ duration: 0.6, delay: 2.2 }}
                 whileHover={{ scale: 1.1 }}
               >
-                <BuildingOfficeIcon className="h-8 w-8 text-primary-600" />
+                <BuildingOfficeIcon className="h-6 w-6 text-primary-600" />
               </motion.div>
             </motion.div>
 
@@ -352,90 +360,69 @@ export default function ClientLoginPage() {
               transition={{ duration: 1, delay: 2.5 }}
             >
               <motion.path
-                d="M 200 200 Q 300 150 400 200"
-                stroke="rgba(255,255,255,0.3)"
-                strokeWidth="2"
+                d="M 160 160 Q 200 140 240 160"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1.5"
                 fill="none"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 2.6 }}
+                transition={{ duration: 0.8, delay: 2.6 }}
               />
               <motion.path
-                d="M 600 200 Q 500 150 400 200"
-                stroke="rgba(255,255,255,0.3)"
-                strokeWidth="2"
+                d="M 320 160 Q 280 140 240 160"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1.5"
                 fill="none"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 2.8 }}
+                transition={{ duration: 0.8, delay: 2.8 }}
               />
               <motion.path
-                d="M 200 400 Q 300 350 400 400"
-                stroke="rgba(255,255,255,0.3)"
-                strokeWidth="2"
+                d="M 160 240 Q 200 220 240 240"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1.5"
                 fill="none"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 3.0 }}
+                transition={{ duration: 0.8, delay: 3.0 }}
               />
               <motion.path
-                d="M 600 400 Q 500 350 400 400"
-                stroke="rgba(255,255,255,0.3)"
-                strokeWidth="2"
+                d="M 320 240 Q 280 220 240 240"
+                stroke="rgba(255,255,255,0.2)"
+                strokeWidth="1.5"
                 fill="none"
                 initial={{ pathLength: 0 }}
                 animate={{ pathLength: 1 }}
-                transition={{ duration: 1, delay: 3.2 }}
+                transition={{ duration: 0.8, delay: 3.2 }}
               />
             </motion.svg>
-
-            {/* Particle Effects */}
-            <motion.div
-              className="absolute inset-0"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 3.5 }}
-            >
-              {[...Array(12)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 bg-white rounded-full"
-                  style={{
-                    left: `${20 + (i * 60) % 80}%`,
-                    top: `${30 + (i * 40) % 60}%`,
-                  }}
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ 
-                    scale: [0, 1, 0],
-                    opacity: [0, 1, 0]
-                  }}
-                  transition={{
-                    duration: 2,
-                    delay: 3.5 + i * 0.1,
-                    repeat: Infinity,
-                    repeatDelay: 1
-                  }}
-                />
-              ))}
-            </motion.div>
           </div>
 
-          {/* Text Overlay */}
+          {/* Text Content */}
           <motion.div
-            className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center"
+            className="text-center"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 4 }}
+            transition={{ duration: 1, delay: 3.5 }}
           >
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-3xl font-bold text-white mb-3">
               Welcome to Odysia
             </h2>
-            <p className="text-white/80 text-lg">
-              Where great projects come to life
+            <p className="text-white/90 text-lg leading-relaxed">
+              Where great projects come to life through<br />
+              trusted collaboration and expert talent
             </p>
           </motion.div>
         </div>
       </div>
-    </div>
+         </div>
+   )
+ }
+
+export default function ClientLoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ClientLoginContent />
+    </Suspense>
   )
 }

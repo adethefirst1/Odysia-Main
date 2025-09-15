@@ -22,6 +22,7 @@ import {
 import Logo from '@/components/Logo'
 import ThemeToggle from '@/components/ThemeToggle'
 import { fadeInDown, staggerContainer, staggerItem } from '@/lib/animations'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 interface ClientDashboardLayoutProps {
   children: React.ReactNode
@@ -39,6 +40,7 @@ const sidebarItems = [
 ]
 
 export default function ClientDashboardLayout({ children, activeSection = 'dashboard' }: ClientDashboardLayoutProps) {
+  const { formatAmount } = useCurrency()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [notifications, setNotifications] = useState(3)
   const [messages, setMessages] = useState(2)
@@ -69,7 +71,7 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
     {
       id: 2,
       type: 'payment',
-      message: 'Payment of ₦250,000 has been processed for Mobile App project',
+      message: `Payment of ${formatAmount(250000)} has been processed for Mobile App project`,
       time: '1 day ago',
       urgent: false,
       read: false

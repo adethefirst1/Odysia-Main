@@ -4,6 +4,8 @@ import '@/styles/globals.css'
 import AnimatedCursor from '@/components/AnimatedCursor'
 import ScrollProgress from '@/components/ScrollProgress'
 import { ThemeProvider } from '@/lib/contexts/ThemeContext'
+import { CurrencyProvider } from '@/lib/contexts/CurrencyContext'
+
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import LayoutWrapper from '@/components/LayoutWrapper'
 import MobileTestingUtils from '@/components/MobileTestingUtils'
@@ -42,8 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <head>
-        {/* Preload critical CSS */}
-        <link rel="preload" href="/_next/static/css/app/layout.css" as="style" />
+        {/* Critical CSS to prevent layout shifts */}
         <style dangerouslySetInnerHTML={{
           __html: `
             /* Critical CSS to prevent layout shifts */
@@ -53,6 +54,20 @@ export default function RootLayout({
             }
             body.loaded { 
               opacity: 1; 
+            }
+            /* Ensure basic styling is available immediately */
+            * {
+              box-sizing: border-box;
+            }
+            html {
+              scroll-behavior: smooth;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
             }
           `
         }} />
@@ -67,18 +82,20 @@ export default function RootLayout({
       </head>
       <body className={`${inter.className} transition-colors duration-300 bg-white dark:bg-black text-gray-900 dark:text-white antialiased`}>
         <ThemeProvider>
-          <ErrorBoundary>
-            <div className="min-h-screen flex flex-col">
-              <ScrollProgress />
-              <AnimatedCursor />
-              <LayoutWrapper>
-                <NavigationWrapper>
-                  {children}
-                </NavigationWrapper>
-              </LayoutWrapper>
-              <MobileTestingUtils />
-            </div>
-          </ErrorBoundary>
+          <CurrencyProvider>
+            <ErrorBoundary>
+              <div className="min-h-screen flex flex-col">
+                <ScrollProgress />
+                <AnimatedCursor />
+                <LayoutWrapper>
+                  <NavigationWrapper>
+                    {children}
+                  </NavigationWrapper>
+                </LayoutWrapper>
+                <MobileTestingUtils />
+              </div>
+            </ErrorBoundary>
+          </CurrencyProvider>
         </ThemeProvider>
       </body>
     </html>

@@ -13,10 +13,12 @@ import {
 } from '@heroicons/react/24/outline'
 import { staggerContainer, staggerItem, fadeInUp } from '@/lib/animations'
 import { useRouter } from 'next/navigation'
+import { useCurrency } from '@/lib/contexts/CurrencyContext'
 
 export default function Projects() {
   const [filter, setFilter] = useState('all')
   const router = useRouter()
+  const { formatAmount } = useCurrency()
 
   const projects = [
     {
@@ -27,7 +29,7 @@ export default function Projects() {
       deadline: '2024-02-15',
       status: 'in-progress',
       progress: 65,
-      budget: '₦500,000',
+      budget: formatAmount(500000),
       description: 'Full-stack e-commerce platform with payment integration and admin dashboard.'
     },
     {
@@ -38,7 +40,7 @@ export default function Projects() {
       deadline: '2024-02-10',
       status: 'completed',
       progress: 100,
-      budget: '₦300,000',
+      budget: formatAmount(300000),
       description: 'Modern mobile app design with intuitive user interface and smooth animations.'
     },
     {
@@ -49,7 +51,7 @@ export default function Projects() {
       deadline: '2024-02-20',
       status: 'pending',
       progress: 25,
-      budget: '₦200,000',
+      budget: formatAmount(200000),
       description: 'Complete brand identity including logo, color palette, and brand guidelines.'
     },
     {
@@ -60,7 +62,7 @@ export default function Projects() {
       deadline: '2024-03-01',
       status: 'in-progress',
       progress: 40,
-      budget: '₦800,000',
+      budget: formatAmount(800000),
       description: 'Scalable web application with advanced features and real-time updates.'
     }
   ]
