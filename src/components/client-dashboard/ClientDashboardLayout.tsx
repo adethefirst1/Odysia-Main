@@ -187,6 +187,8 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="p-2 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg transition-colors" 
                   aria-label="Notifications"
+                  aria-haspopup="menu"
+                  aria-expanded={showNotifications}
                   style={{
                     minHeight: '44px',
                     minWidth: '44px',
@@ -196,8 +198,8 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                 >
                   <BellIcon className="h-6 w-6" />
                   {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notifications}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {notifications > 99 ? '99+' : notifications}
                     </span>
                   )}
                 </button>
@@ -214,16 +216,30 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                         onClick={() => setShowNotifications(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-80 sm:w-96 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-hidden"
+                        className="absolute right-0 sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-80 max-w-[calc(100vw-2rem)] sm:max-w-sm bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50 max-h-[70vh] overflow-hidden"
+                        style={{ 
+                          WebkitOverflowScrolling: 'touch',
+                          left: 'auto',
+                          right: '1rem',
+                          transform: 'translateX(0)'
+                        }}
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                       >
                         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                            <button
+                              onClick={() => setNotifications(0)}
+                              className="text-xs sm:text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                            >
+                              Mark all as read
+                            </button>
+                          </div>
                         </div>
-                        <div className="max-h-64 overflow-y-auto">
+                        <div className="max-h-[60vh] sm:max-h-64 overflow-y-auto overscroll-contain">
                           {recentNotifications.map((notification) => (
                             <motion.div
                               key={notification.id}
@@ -243,7 +259,7 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                                   notification.urgent ? 'bg-red-500' : 'bg-green-500'
                                 }`} />
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm font-medium ${
+                                  <p className={`text-sm sm:text-sm font-medium ${
                                     !notification.read 
                                       ? 'text-gray-900 dark:text-white' 
                                       : 'text-gray-600 dark:text-gray-400'
@@ -262,7 +278,11 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                           ))}
                         </div>
                         <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-                          <button className="w-full text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium">
+                          <button
+                            onClick={() => { setShowNotifications(false); router.push('/client-dashboard/notifications') }}
+                            className="w-full text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                            aria-label="View all notifications"
+                          >
                             View all notifications
                           </button>
                         </div>
@@ -290,8 +310,8 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                 >
                   <PaperAirplaneIcon className="h-6 w-6" />
                   {messages > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {messages}
+                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {messages > 99 ? '99+' : messages}
                     </span>
                   )}
                 </button>
@@ -331,7 +351,12 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
                         onClick={() => setShowProfileMenu(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-48 sm:w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                        className="absolute right-0 sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-56 max-w-[calc(100vw-2rem)] sm:max-w-none bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 z-50"
+                        style={{ 
+                          left: 'auto',
+                          right: '1rem',
+                          transform: 'translateX(0)'
+                        }}
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
@@ -564,7 +589,7 @@ export default function ClientDashboardLayout({ children, activeSection = 'dashb
         </motion.aside>
 
         {/* Main Content - Mobile Optimized */}
-        <main className="flex-1 min-h-screen">
+        <main className={`flex-1 min-h-screen ${pathname.includes('/messages') ? 'flex justify-center' : ''}`}>
           <div className="p-4 sm:p-6 lg:p-8">
             {children}
           </div>
