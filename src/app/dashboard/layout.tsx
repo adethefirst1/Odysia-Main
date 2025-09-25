@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { AuthProvider } from '@/lib/contexts/AuthContext'
 import DashboardAuthGuard from '@/components/dashboard/DashboardAuthGuard'
+import ExpertDashboardWrapper from '@/components/layouts/ExpertDashboardWrapper'
 
 export const metadata: Metadata = {
   title: 'Expert Dashboard - Odysia',
@@ -15,8 +16,10 @@ export default function DashboardLayout({
   return (
     <AuthProvider>
       <DashboardAuthGuard>
-        {children}
+        <ExpertDashboardWrapper>
+          {children}
+        </ExpertDashboardWrapper>
       </DashboardAuthGuard>
     </AuthProvider>
   )
-} 
+}

@@ -1,4 +1,4 @@
-import ClientDashboardLayout from '@/components/client-dashboard/ClientDashboardLayout'
+import ClientDashboardWrapper from '@/components/layouts/ClientDashboardWrapper'
 
 export default function ClientDashboardRootLayout({
   children,
@@ -6,8 +6,8 @@ export default function ClientDashboardRootLayout({
   children: React.ReactNode
 }) {
   return (
-    <ClientDashboardLayout>
+    <ClientDashboardWrapper>
       {children}
-    </ClientDashboardLayout>
+    </ClientDashboardWrapper>
   )
 }

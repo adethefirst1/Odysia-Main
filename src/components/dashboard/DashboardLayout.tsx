@@ -109,6 +109,15 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
     // Here you would typically navigate to the relevant page or mark as read
   }
 
+  const handleMarkAllRead = () => {
+    setNotifications(0)
+  }
+
+  const handleViewAll = () => {
+    setShowNotifications(false)
+    router.push('/dashboard/notifications')
+  }
+
   const handleMessagesClick = () => {
     router.push('/dashboard/projects')
   }
@@ -169,11 +178,13 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                   onClick={() => setShowNotifications(!showNotifications)}
                   className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 p-2 sm:p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-card transition-colors mobile-touch-target focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2" 
                   aria-label="Notifications"
+                  aria-haspopup="menu"
+                  aria-expanded={showNotifications}
                 >
                   <BellIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                   {notifications > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {notifications}
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {notifications > 99 ? '99+' : notifications}
                     </span>
                   )}
                 </button>
@@ -190,16 +201,27 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                         onClick={() => setShowNotifications(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-80 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        className="sm:absolute sm:right-0 sm:mt-2 fixed top-16 left-4 right-4 sm:inset-x-auto w-[calc(100vw-2rem)] sm:w-80 md:w-96 max-w-[calc(100vw-2rem)] sm:max-w-none bg-white dark:bg-dark-card rounded-xl sm:rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        style={{ 
+                          WebkitOverflowScrolling: 'touch'
+                        }}
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
                       >
                         <div className="p-4 border-b border-gray-200 dark:border-dark-border">
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                          <div className="flex items-center justify-between gap-2">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                            <button
+                              onClick={handleMarkAllRead}
+                              className="text-xs sm:text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                            >
+                              Mark all as read
+                            </button>
+                          </div>
                         </div>
-                        <div className="max-h-96 overflow-y-auto">
+                        <div className="max-h-[70vh] sm:max-h-96 overflow-y-auto overscroll-contain">
                           {recentNotifications.map((notification) => (
                             <motion.div
                               key={notification.id}
@@ -214,7 +236,7 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                                   notification.urgent ? 'bg-red-500' : 'bg-green-500'
                                 }`} />
                                 <div className="flex-1 min-w-0">
-                                  <p className={`text-sm font-medium ${
+                                  <p className={`text-sm sm:text-sm font-medium ${
                                     !notification.read 
                                       ? 'text-gray-900 dark:text-white' 
                                       : 'text-gray-600 dark:text-gray-400'
@@ -233,7 +255,11 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                           ))}
                         </div>
                         <div className="p-4 border-t border-gray-200 dark:border-dark-border">
-                          <button className="w-full text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium">
+                          <button
+                            onClick={handleViewAll}
+                            className="w-full text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
+                            aria-label="View all notifications"
+                          >
                             View all notifications
                           </button>
                         </div>
@@ -256,8 +282,8 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                 >
                   <PaperAirplaneIcon className="h-5 w-5 sm:h-6 sm:w-6" />
                   {messages > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                      {messages}
+                    <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] leading-none rounded-full h-5 min-w-[20px] px-1.5 flex items-center justify-center">
+                      {messages > 99 ? '99+' : messages}
                     </span>
                   )}
                 </button>
@@ -292,7 +318,12 @@ export default function DashboardLayout({ children, activeSection = 'dashboard' 
                         onClick={() => setShowProfileMenu(false)}
                       />
                       <motion.div
-                        className="absolute right-0 mt-2 w-48 bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        className="absolute right-0 sm:right-0 mt-2 w-[calc(100vw-2rem)] sm:w-48 max-w-[calc(100vw-2rem)] sm:max-w-none bg-white dark:bg-dark-card rounded-lg shadow-lg border border-gray-200 dark:border-dark-border z-50"
+                        style={{ 
+                          left: 'auto',
+                          right: '1rem',
+                          transform: 'translateX(0)'
+                        }}
                         initial={{ opacity: 0, y: -10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -10, scale: 0.95 }}
